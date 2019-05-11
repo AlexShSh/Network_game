@@ -4,28 +4,19 @@
 
 #include "NetworkDefinitions.h"
 
-class ClientInfo
-{
-public:
-    ClientInfo(sf::TcpSocket* sock);
-    ClientInfo(sf::IpAddress ip, PortNumber port_);
-    std::pair<sf::IpAddress, PortNumber> get_info() const;
-
-private:
-    sf::IpAddress ipAddress;
-    PortNumber port;
-};
-
 
 class ClientHandler
 {
 public:
-    ClientHandler(sf::TcpSocket* sock);
+    ClientHandler(sf::TcpSocket* sock, ClientId id_);
+    void set_packet(sf::Packet packet);
     sf::TcpSocket* get_socket() const;
-    std::pair<sf::IpAddress, PortNumber> get_info() const;
+    ClientId get_id() const;
+    sf::Packet get_rcv_packet() const;
     ~ClientHandler();
 
 private:
-    sf::TcpSocket socket;
-    ClientInfo info;
+    sf::TcpSocket* socket;
+    ClientId id;
+    sf::Packet rcv_pack;
 };

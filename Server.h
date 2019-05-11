@@ -29,12 +29,14 @@ private:
     sf::Int32 con_delay;
 
     std::list<ClientHandler> clients;
-    std::vector<sf::Packet>  recived;
+
+    ClientId last_id;
 
     void recive();
     bool add_client();
-    bool send(ClientId id, sf::Packet& packet);
-    bool broadcast(sf::Packet& packet)
+    bool send_id(sf::TcpSocket* socket, ClientId id);
+    bool broadcast(sf::Packet& packet);
+    ClientId get_id();
 
 };
 
