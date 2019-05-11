@@ -5,7 +5,8 @@ Server::Server() :
     port(Network::ServerPort),
     max_players(Network::MaxPlayersNum),
     cur_players(0),
-    con_delay(Network::ConnectionDelay)
+    con_delay(Network::ConnectionDelay),
+    last_id(0)
 {
     listener.listen(port);
     selector.add(listener);
