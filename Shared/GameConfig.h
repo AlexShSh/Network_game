@@ -4,10 +4,11 @@
 
 enum Dir
 {
-    UP,
-    DOWN,
+    DOWN = 0,
     LEFT,
-    RIGHT
+    RIGHT,
+    UP,
+    NONE
 };
 
 enum {PLAYER_SPEED = 10};

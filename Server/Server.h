@@ -38,6 +38,7 @@ private:
     bool send_id(sf::TcpSocket* socket, ClientId id);
     bool broadcast(sf::Packet& packet);
     ClientId get_id();
+    void add_disconnected_packet(sf::Packet& packet);
 
 };
 

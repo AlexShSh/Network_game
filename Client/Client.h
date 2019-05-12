@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "../Shared/NetworkDefinitions.h"
+#include "Game.h"
 
 class Client
 {
@@ -13,7 +14,9 @@ public:
     bool recieve(sf::Packet& packet);
     bool recive_id();
 
-    bool start();
+    bool start(Game* game);
+
+    ~Client();
 
 private:
     sf::TcpSocket socket;

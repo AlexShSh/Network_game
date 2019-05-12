@@ -57,7 +57,39 @@ bool Client::recive_id()
     return true;
 }
 
-bool Client::start()
+void keyboard_reader(Game* game)
 {
+    game->keyboard_reader();
+}
 
+bool Client::start(Game* game)
+{
+    if (!recive_id())
+        return false;
+
+    sf::Packet packet;
+
+    game->start();
+
+    sf::Thread keyboard_thread(keyboard_reader, game);
+    keyboard_thread.launch();
+
+    sf::Clock timer;
+
+    while (timer.getElapsedTime().asMilliseconds() >= Network::ConnectionDelay)
+    {
+        timer.restart();
+
+        recieve(packet);
+        game->update_players(packet);
+
+        sf::Packet send_packet = game->get_packet();
+        send(send_packet);
+    }
+
+}
+
+Client::~Client()
+{
+    std::cout << "Client was destroyed" << std::endl;
 }

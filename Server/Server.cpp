@@ -159,6 +159,9 @@ bool Server::start(World *world)
                 break;
 
             sf::Packet pack = world->create_game_state();
+            if (!disconnected.empty())
+                add_disconnected_packet(pack);
+
             broadcast(pack);
 
             recive();
@@ -168,5 +171,14 @@ bool Server::start(World *world)
                 disconnected.clear();
             }
         }
+    }
+}
+
+
+void Server::add_disconnected_packet(sf::Packet &packet)
+{
+    for (auto cl : disconnected)
+    {
+        packet << cl << -1 << -1 << NONE;
     }
 }
