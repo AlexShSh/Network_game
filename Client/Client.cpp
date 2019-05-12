@@ -1,0 +1,63 @@
+#include "Client.h"
+
+Client::Client(sf::IpAddress &serv_ip, PortNumber serv_port) :
+    server_ip(serv_ip),
+    server_port(serv_port),
+    id(-1)
+{
+    local_ip = sf::IpAddress::getLocalAddress();
+
+    auto status = socket.connect(server_ip, server_port);
+
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Can't connect to server" << std::endl;
+        throw std::runtime_error("Can't connect to server");
+    }
+
+
+    local_port = socket.getLocalPort();
+}
+
+bool Client::send(sf::Packet &packet)
+{
+    if (socket.send(packet) != sf::Socket::Done)
+    {
+        std::cout << "Can't send packet" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool Client::recieve(sf::Packet &packet)
+{
+    packet.clear();
+    if (socket.receive(packet) != sf::Socket::Done)
+    {
+        std::cout << "Can't recieve packet" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool Client::recive_id()
+{
+    sf::Packet packet;
+    if (socket.receive(packet) != sf::Socket::Done)
+    {
+        std::cout << "Can't recieve id" << std::endl;
+        return false;
+    }
+
+    if (!(packet >> id))
+    {
+        std::cout << "Unexpected packet" << std::endl;
+        return false;
+    }
+    return true;
+}
+
+bool Client::start()
+{
+
+}
