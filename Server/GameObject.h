@@ -2,7 +2,7 @@
 
 #include <SFML/Network.hpp>
 
-#include "GameConfig.h"
+#include "../Shared/GameConfig.h"
 
 
 class GameObject

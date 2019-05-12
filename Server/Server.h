@@ -5,7 +5,7 @@
 #include <list>
 #include <vector>
 
-#include "NetworkDefinitions.h"
+#include "../Shared/NetworkDefinitions.h"
 #include "World.h"
 #include "ClientHandler.h"
 
@@ -29,6 +29,7 @@ private:
     sf::Int32 con_delay;
 
     std::list<ClientHandler> clients;
+    std::list<ClientId> disconnected;
 
     ClientId last_id;
 

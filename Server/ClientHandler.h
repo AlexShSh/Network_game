@@ -2,7 +2,7 @@
 
 #include <SFML/Network.hpp>
 
-#include "NetworkDefinitions.h"
+#include "../Shared/NetworkDefinitions.h"
 
 
 class ClientHandler

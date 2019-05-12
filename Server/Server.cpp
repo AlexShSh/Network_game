@@ -16,6 +16,7 @@ Server::Server() :
 
 bool Server::connect_clients()
 {
+    std::cout << "Wait to connect " << max_players << " players" << std::endl;
     while (true)
     {
         if (selector.wait())
@@ -23,7 +24,11 @@ bool Server::connect_clients()
             if (selector.isReady(listener))
                 add_client();
             if (cur_players == max_players)
+            {
+                std::cout << "All players connected" << std::endl;
                 return true;
+            }
+
         }
     }
     return false;
@@ -81,6 +86,7 @@ void Server::recive()
                     selector.remove(*sock);
                     it = clients.erase(it);
 
+                    disconnected.emplace_back(client.get_id());
                     cur_players--;
 
                     std::cout << "Client was disconected\n";
@@ -135,4 +141,32 @@ bool Server::broadcast(sf::Packet &packet)
 Server::~Server()
 {
     std::cout << "Server was destroyed" << std::endl;
+}
+
+bool Server::start(World *world)
+{
+    connect_clients();
+
+    world->create_players(clients);
+
+    sf::Clock timer;
+
+    while (true)
+    {
+        if (timer.getElapsedTime().asMilliseconds() >= con_delay)
+        {
+            if (!world->update_players(clients, timer.restart()))
+                break;
+
+            sf::Packet pack = world->create_game_state();
+            broadcast(pack);
+
+            recive();
+            if (!disconnected.empty())
+            {
+                world->delete_disconnected(disconnected);
+                disconnected.clear();
+            }
+        }
+    }
 }
