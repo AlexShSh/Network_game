@@ -1,5 +1,8 @@
 #include "World.h"
 
+#include <iostream>
+
+
 World::World()
 {}
 
@@ -7,7 +10,8 @@ void World::create_players(std::list<ClientHandler> &clients)
 {
     for (auto& cl : clients)
     {
-        players.emplace(cl.get_id(), GameObject());
+        ClientId id = cl.get_id();
+        players.emplace(id, GameObject(100 * id, 100 * id, LEFT));
     }
 }
 
@@ -29,7 +33,7 @@ sf::Packet World::create_game_state()
     for (auto& pl : players)
     {
         packet << pl.first << pl.second.get_position().x <<
-        pl.second.get_position().y << pl.second.get_direction();
+        pl.second.get_position().y << (sf::Int16) pl.second.get_direction();
     }
 
     return packet;

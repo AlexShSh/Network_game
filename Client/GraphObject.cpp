@@ -15,6 +15,7 @@ GraphObject::GraphObject(std::string file, int width_, int height_, float x, flo
     image.loadFromFile("../images/" + file);
     texture.loadFromImage(image);
     sprite.setTexture(texture);
+    sprite.setTextureRect(sf::IntRect(0, 0, width, height));
 }
 
 void GraphObject::set_position(float x, float y, Dir dir)
@@ -24,9 +25,9 @@ void GraphObject::set_position(float x, float y, Dir dir)
     sprite.setPosition(sprite_coord);
 }
 
-void GraphObject::draw(sf::RenderWindow &window)
+void GraphObject::draw(sf::RenderWindow* window)
 {
-    window.draw(sprite);
+    window->draw(sprite);
 }
 
 void GraphObject::frame_pos(Dir direct)

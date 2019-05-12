@@ -1,14 +1,15 @@
 #include "GameObject.h"
+#include <iostream>
 
-GameObject::GameObject(sf::Vector2f pos, float speed_, Dir dir_) :
-    position(pos),
-    speed(speed_),
+GameObject::GameObject(float x, float y, Dir dir_) :
+    position(x, y),
+    speed(player_speed),
     dir(dir_)
 {}
 
 GameObject::GameObject() :
-    position({0, 0}),
-    speed(PLAYER_SPEED),
+    position(250, 250),
+    speed(player_speed),
     dir(LEFT)
 {}
 
@@ -44,18 +45,19 @@ Dir GameObject::get_direction() const
 
 bool GameObject::update_from_packet(sf::Packet packet, sf::Time time)
 {
-    Dir new_dir;
-    if (!(packet >> new_dir))
+    sf::Int16 dir_tmp = -1;
+    if (!(packet >> dir_tmp))
         return false;
 
-    dir = new_dir;
+    dir = (Dir) dir_tmp;
+
     switch (dir)
     {
         case UP:
-            position += {0, speed * time.asMilliseconds()};
+            position += {0, -speed * time.asMilliseconds()};
             break;
         case DOWN:
-            position += {0, -speed * time.asMilliseconds()};
+            position += {0, speed * time.asMilliseconds()};
             break;
         case LEFT:
             position += {-speed * time.asMilliseconds(), 0};
@@ -63,5 +65,6 @@ bool GameObject::update_from_packet(sf::Packet packet, sf::Time time)
         case RIGHT:
             position += {speed * time.asMilliseconds(), 0};
     }
+
     return true;
 }

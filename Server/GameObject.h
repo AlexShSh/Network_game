@@ -8,7 +8,7 @@
 class GameObject
 {
 public:
-    GameObject(sf::Vector2f pos, float speed_, Dir dir_);
+    GameObject(float x, float y, Dir dir_);
     GameObject();
     void set_position(sf::Vector2f& pos);
     void set_direction(Dir dir_);

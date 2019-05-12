@@ -12,9 +12,10 @@ class Game
 public:
     Game();
     void start();
-    void update_players(sf::Packet& packet);
+    void update_players(sf::Packet& packet, float time);
     void keyboard_reader();
     sf::Packet get_packet();
+    void render();
 
 private:
     std::map<ClientId, GraphObject> players;

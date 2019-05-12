@@ -1,6 +1,6 @@
 #include "Client.h"
 
-Client::Client(sf::IpAddress &serv_ip, PortNumber serv_port) :
+Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
     server_ip(serv_ip),
     server_port(serv_port),
     id(-1)
@@ -26,6 +26,7 @@ bool Client::send(sf::Packet &packet)
         std::cout << "Can't send packet" << std::endl;
         return false;
     }
+
     return true;
 }
 
@@ -54,6 +55,9 @@ bool Client::recive_id()
         std::cout << "Unexpected packet" << std::endl;
         return false;
     }
+
+    std::cout << "ID: " << id << std::endl;
+
     return true;
 }
 
@@ -76,15 +80,18 @@ bool Client::start(Game* game)
 
     sf::Clock timer;
 
-    while (timer.getElapsedTime().asMilliseconds() >= Network::ConnectionDelay)
+    while (true)
     {
-        timer.restart();
+        if (timer.getElapsedTime().asMilliseconds() >= Network::ConnectionDelay)
+        {
+            recieve(packet);
 
-        recieve(packet);
-        game->update_players(packet);
+            game->update_players(packet, timer.restart().asMilliseconds());
+            game->render();
 
-        sf::Packet send_packet = game->get_packet();
-        send(send_packet);
+            sf::Packet send_packet = game->get_packet();
+            send(send_packet);
+        }
     }
 
 }

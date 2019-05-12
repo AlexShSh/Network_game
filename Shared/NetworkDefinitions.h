@@ -3,7 +3,7 @@
 #include <SFML/Network.hpp>
 
 using PortNumber = unsigned short;
-using ClientId   = sf::Int8;
+using ClientId   = sf::Int16 ;
 
 namespace Network
 {
@@ -11,7 +11,7 @@ namespace Network
 enum
 {
     ServerPort = 5678,
-    ConnectionDelay = 20,
+    ConnectionDelay = 30,
     MaxPlayersNum = 2
 };
 

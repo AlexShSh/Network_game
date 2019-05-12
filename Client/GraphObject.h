@@ -11,7 +11,7 @@ public:
     GraphObject(std::string file, int width, int height, float x, float y,
                 Dir dir, float animation_speed, int frame_amount);
     GraphObject() = default;
-    void draw(sf::RenderWindow &window);
+    void draw(sf::RenderWindow* window);
     void set_position(float x, float y, Dir dir);
     void frame_pos(Dir direct);
     void animation(Dir direct, float time);

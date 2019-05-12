@@ -9,7 +9,7 @@
 class Client
 {
 public:
-    Client(sf::IpAddress& serv_ip, PortNumber serv_port);
+    Client(sf::IpAddress serv_ip, PortNumber serv_port);
     bool send(sf::Packet& packet);
     bool recieve(sf::Packet& packet);
     bool recive_id();

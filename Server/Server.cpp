@@ -1,7 +1,7 @@
 #include "Server.h"
 
 Server::Server() :
-    ipAddress(sf::IpAddress::getLocalAddress()),
+    ipAddress(sf::IpAddress::LocalHost),
     port(Network::ServerPort),
     max_players(Network::MaxPlayersNum),
     cur_players(0),
@@ -37,7 +37,7 @@ bool Server::connect_clients()
 bool Server::add_client()
 {
     auto new_socket = new sf::TcpSocket;
-    new_socket.setBlocking(false);
+    new_socket->setBlocking(false);
 
     if (listener.accept(*new_socket) == sf::Socket::Done)
     {
@@ -115,6 +115,9 @@ bool Server::send_id(sf::TcpSocket *socket, ClientId id)
         std::cout << "Couldn't send id" << std::endl;
         return false;
     }
+
+    std::cout << "send ID: " << id << std::endl;
+
     return true;
 }
 
@@ -129,13 +132,14 @@ bool Server::broadcast(sf::Packet &packet)
             status = sock->send(packet);
 
         if (status == sf::Socket::Done)
-            return true;
+            continue;
         else
         {
             std::cout << "Couldn't send packet" << std::endl;
             return false;
         }
     }
+    return true;
 }
 
 Server::~Server()
@@ -146,6 +150,8 @@ Server::~Server()
 bool Server::start(World *world)
 {
     connect_clients();
+
+    std::cout << clients.size() << std::endl;
 
     world->create_players(clients);
 
