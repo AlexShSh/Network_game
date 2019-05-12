@@ -11,4 +11,4 @@ enum Dir
     NONE
 };
 
-const float player_speed = 0.1;
+const float player_speed = 0.2;

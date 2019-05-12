@@ -11,18 +11,19 @@ void Game::update_players(sf::Packet& packet, float time)
     sf::Int16 dir_tmp;
     while(packet >> id >> x >> y >> dir_tmp)
     {
-        //std::cout << id << " " << x << " " << y << " " << dir_tmp << std::endl;
         Dir dir = (Dir) dir_tmp;
-        if (dir == NONE && players.count(id) != 0)
+        if (dir == NONE)
+        {
             players.erase(id);
+            return;
+        }
+
 
         if (players.count(id) == 0)
             players.emplace(id, GraphObject("hero.png", 96, 96, x, y, dir, 0.005, 3));
 
         players[id].set_position(x, y, dir);
-        //players[id].animation(dir, time);
     }
-    //std::cout << std::endl;
 }
 
 void Game::start()
@@ -42,7 +43,7 @@ void Game::keyboard_reader()
     ev.type = sf::Event::GainedFocus;
     while (is_active && window->waitEvent(ev))
     {
-        sf::sleep(sf::milliseconds(50));
+        sf::sleep(sf::milliseconds(20));
         Dir dir = keyboard.get_direction();
         if (dir != NONE)
         {
