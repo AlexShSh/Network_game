@@ -87,21 +87,21 @@ bool Client::start(Game* game)
 
     while (true)
     {
-        if (timer.getElapsedTime().asMilliseconds() >= Network::ConnectionDelay)
-        {
-            if (!recieve(packet))
-            {
-                break;
-            }
+        if (!game->update_window())
+            break;
 
-            game->update_players(packet, timer.restart().asMilliseconds());
-            game->render();
+        if (!recieve(packet))
+            break;
 
-            sf::Packet send_packet = game->get_packet();
-            send(send_packet);
-        }
+        game->update_players(packet, timer.restart().asMilliseconds());
+        game->render();
+
+        sf::Packet send_packet = game->get_packet();
+        send(send_packet);
+
     }
     game->set_active(false);
+    return true;
 }
 
 Client::~Client()
