@@ -33,11 +33,16 @@ bool Client::send(sf::Packet &packet)
 bool Client::recieve(sf::Packet &packet)
 {
     packet.clear();
-    if (socket.receive(packet) != sf::Socket::Done)
+    auto status = socket.receive(packet);
+
+    if (status == sf::Socket::Disconnected)
     {
-        std::cout << "Can't recieve packet" << std::endl;
+        std::cout << "Server was disconected" << std::endl;
         return false;
     }
+    else if (status != sf::Socket::Done)
+        std::cout << "Can't recive packet" << std::endl;
+
     return true;
 }
 
@@ -84,7 +89,10 @@ bool Client::start(Game* game)
     {
         if (timer.getElapsedTime().asMilliseconds() >= Network::ConnectionDelay)
         {
-            recieve(packet);
+            if (!recieve(packet))
+            {
+                break;
+            }
 
             game->update_players(packet, timer.restart().asMilliseconds());
             game->render();
@@ -93,7 +101,7 @@ bool Client::start(Game* game)
             send(send_packet);
         }
     }
-
+    game->set_active(false);
 }
 
 Client::~Client()

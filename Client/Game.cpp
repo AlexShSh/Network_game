@@ -70,3 +70,13 @@ void Game::render()
     }
     window->display();
 }
+
+Game::~Game()
+{
+    window->close();
+}
+
+void Game::set_active(bool b)
+{
+    is_active = b;
+}

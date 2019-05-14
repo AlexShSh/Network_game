@@ -1,7 +1,7 @@
 #include "Server.h"
 
 Server::Server() :
-    ipAddress(sf::IpAddress::LocalHost),
+    ipAddress(sf::IpAddress::getLocalAddress()),
     port(Network::ServerPort),
     max_players(Network::MaxPlayersNum),
     cur_players(0),
@@ -115,8 +115,6 @@ bool Server::send_id(sf::TcpSocket *socket, ClientId id)
         std::cout << "Couldn't send id" << std::endl;
         return false;
     }
-
-    std::cout << "send ID: " << id << std::endl;
 
     return true;
 }
