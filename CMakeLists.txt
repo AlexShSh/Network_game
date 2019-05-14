@@ -14,12 +14,15 @@ set(SFML_DIR "/usr/share/SFML")
 set(CMAKE_MODULE_PATH "/usr/share/SFML/cmake/Modules" ${CMAKE_MODULE_PATH})
 
 find_package(SFML REQUIRED system window graphics network audio)
+find_package(Threads)
+find_package(X11 REQUIRED)
+
 
 if(SFML_FOUND)
 
     include_directories(${SFML_INCLUDE_DIR})
 
     target_link_libraries(Server ${SFML_LIBRARIES})
-    target_link_libraries(Client ${SFML_LIBRARIES})
+    target_link_libraries(Client ${SFML_LIBRARIES} ${X11_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 
 endif()
