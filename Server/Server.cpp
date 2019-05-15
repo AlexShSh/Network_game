@@ -149,8 +149,6 @@ bool Server::start(World *world)
 {
     connect_clients();
 
-    std::cout << clients.size() << std::endl;
-
     world->create_players(clients);
 
     sf::Clock timer;
