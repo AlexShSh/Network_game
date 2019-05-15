@@ -75,19 +75,19 @@ bool GameObject::update_from_packet(sf::Packet packet, sf::Time time)
 
     switch (dir)
     {
-        case conf::UP:
+        case conf::Dir::UP:
             position += {0, -speed * time.asMilliseconds()};
             animate(time.asMilliseconds());
             break;
-        case conf::DOWN:
+        case conf::Dir::DOWN:
             position += {0, speed * time.asMilliseconds()};
             animate(time.asMilliseconds());
             break;
-        case conf::LEFT:
+        case conf::Dir::LEFT:
             position += {-speed * time.asMilliseconds(), 0};
             animate(time.asMilliseconds());
             break;
-        case conf::RIGHT:
+        case conf::Dir::RIGHT:
             position += {speed * time.asMilliseconds(), 0};
             animate(time.asMilliseconds());
         default:

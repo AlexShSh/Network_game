@@ -8,7 +8,7 @@ void World::create_players(std::list<ClientHandler> &clients)
     for (auto& cl : clients)
     {
         ClientId id = cl.get_id();
-        auto new_pl = new Player(100 * id, 100 * id, LEFT);
+        auto new_pl = new Player(100 * id, 100 * id, conf::Dir::LEFT);
         players.emplace(id, new_pl);
         objects.emplace_back(new_pl);
     }

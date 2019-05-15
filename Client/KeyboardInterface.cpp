@@ -3,16 +3,16 @@
 conf::Dir KeyboardInterface::get_direction()
 {
     if ((sf::Keyboard::isKeyPressed(sf::Keyboard::D)))
-        return conf::RIGHT;
+        return conf::Dir::RIGHT;
 
     if ((sf::Keyboard::isKeyPressed(sf::Keyboard::W)))
-        return conf::UP;
+        return conf::Dir::UP;
 
     if ((sf::Keyboard::isKeyPressed(sf::Keyboard::S)))
-        return conf::DOWN;
+        return conf::Dir::DOWN;
 
     if ((sf::Keyboard::isKeyPressed(sf::Keyboard::A)))
-        return conf::LEFT;
+        return conf::Dir::LEFT;
 
-    return conf::NONE;
+    return conf::Dir::NONE;
 }
