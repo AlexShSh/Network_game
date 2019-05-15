@@ -28,9 +28,26 @@ bool World::upd_players_from_packs(std::list<ClientHandler> &clients)
 
 void World::update_objects(sf::Time time)
 {
-    for (auto& obj : objects)
+    for (auto it = objects.begin(); it != objects.end(); it++)
     {
+        auto obj = *it;
+
         obj->update(time);
+
+        if (obj->get_type() == conf::ObjectType::PLAYER)
+        {
+            auto player = dynamic_cast<Player*> (obj);
+            if (player->is_shoot())
+            {
+                make_shoot(player);
+            }
+        }
+
+        if (!obj->get_active())
+        {
+            delete obj;
+            objects.erase(it);
+        }
     }
 }
 
@@ -60,4 +77,12 @@ void World::delete_disconnected(std::list<ClientId> &disconnected)
             }
         }
     }
+}
+
+void World::make_shoot(Player* player)
+{
+    auto bul = new Bullet(player->get_position().x, player->get_position().y,
+                          player->get_direction());
+
+    objects.emplace_back(bul);
 }

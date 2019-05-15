@@ -5,6 +5,7 @@
 
 #include "GameObject.h"
 #include "Player.h"
+#include "Bullet.h"
 #include "../Shared/NetworkDefinitions.h"
 #include "ClientHandler.h"
 
@@ -18,6 +19,7 @@ public:
     void update_objects(sf::Time time);
     sf::Packet create_game_state();
     void delete_disconnected(std::list<ClientId>& disconnected);
+    void make_shoot(Player* player);
 
 private:
     std::map<ClientId, Player*>  players;

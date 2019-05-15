@@ -36,7 +36,7 @@ void Game::update_players(sf::Packet& packet)
 
 void Game::start()
 {
-    window = new sf::RenderWindow(sf::VideoMode(600, 500), "Stannis Baratheon");
+    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
     window->clear();
     window->display();
     lion.loadFromFile("hero.png");
