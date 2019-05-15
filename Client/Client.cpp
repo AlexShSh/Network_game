@@ -92,7 +92,7 @@ bool Client::start(Game* game)
         if (!recieve(packet))
             break;
 
-        game->update_players(packet);
+        game->update_players(packet, );
         game->render();
 
         sf::Packet send_packet = game->get_packet();
