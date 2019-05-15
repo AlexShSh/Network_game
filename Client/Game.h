@@ -18,6 +18,7 @@ public:
     sf::Packet get_packet();
     void render();
     void set_active(bool b);
+    void window_clear();
 
 private:
     std::map<ClientId, GraphObject> players;
@@ -25,4 +26,5 @@ private:
     sf::RenderWindow* window;
     sf::Packet packet;
     bool is_active;
+
 };

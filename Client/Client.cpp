@@ -1,5 +1,6 @@
 #include "Client.h"
 
+
 Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
     server_ip(serv_ip),
     server_port(serv_port),
@@ -93,7 +94,7 @@ bool Client::start(Game* game)
             {
                 break;
             }
-
+            game->window_clear();
             game->update_players(packet, timer.restart().asMilliseconds());
             game->render();
 

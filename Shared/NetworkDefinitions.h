@@ -12,7 +12,7 @@ enum
 {
     ServerPort = 5678,
     ConnectionDelay = 30,
-    MaxPlayersNum = 2
+    MaxPlayersNum = 1
 };
 
 }

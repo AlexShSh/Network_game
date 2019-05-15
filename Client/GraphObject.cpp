@@ -12,7 +12,7 @@ GraphObject::GraphObject(std::string file, int width_, int height_, float x, flo
    animation_speed(animation_speed_),
    frame_amount(frame_amount_)
 {
-    image.loadFromFile("../images/" + file);
+    image.loadFromFile(file);
     texture.loadFromImage(image);
     sprite.setTexture(texture);
     sprite.setTextureRect(sf::IntRect(0, 0, width, height));

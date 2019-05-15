@@ -9,8 +9,9 @@ void Game::update_players(sf::Packet& packet, float time)
     ClientId id;
     float x, y;
     sf::Int16 dir_tmp;
-    while(packet >> id >> x >> y >> dir_tmp)
-    {
+
+    packet >> id >> x >> y >> dir_tmp;
+
         Dir dir = (Dir) dir_tmp;
         if (dir == NONE)
         {
@@ -21,9 +22,9 @@ void Game::update_players(sf::Packet& packet, float time)
 
         if (players.count(id) == 0)
             players.emplace(id, GraphObject("hero.png", 96, 96, x, y, dir, 0.005, 3));
-
+        players[id].frame_pos(dir);
         players[id].set_position(x, y, dir);
-    }
+
 }
 
 void Game::start()
@@ -61,9 +62,13 @@ sf::Packet Game::get_packet()
     return copy;
 }
 
-void Game::render()
+void Game::window_clear()
 {
     window->clear();
+}
+
+void Game::render()
+{
     for (auto& pl : players)
     {
         pl.second.draw(window);
