@@ -1,7 +1,8 @@
 #include "Game.h"
 
 Game::Game() :
-    is_active(false)
+    is_active(false),
+    window_focused(false)
 {}
 
 void Game::update_players(sf::Packet& packet)
@@ -9,7 +10,8 @@ void Game::update_players(sf::Packet& packet)
     ClientId id;
     float x, y;
     sf::Int16 dir_tmp;
-    while(packet >> id >> x >> y >> dir_tmp)
+
+    while (packet >> id >> x >> y >> dir_tmp)
     {
         Dir dir = (Dir) dir_tmp;
         if (dir == NONE)
@@ -74,7 +76,9 @@ void Game::render()
 
 Game::~Game()
 {
+    std::cout << "Endgame\n";
     window->close();
+    delete window;
 }
 
 void Game::set_active(bool b)
