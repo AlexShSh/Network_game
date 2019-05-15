@@ -9,7 +9,5 @@ class KeyboardInterface
 {
 public:
     conf::Dir get_direction();
-
-private:
-    conf::Dir direction;
+    bool get_shoot();
 };

@@ -73,7 +73,17 @@ void Player::compress_packet(sf::Packet &packet)
           (sf::Int16) dir << get_current_frame();
 }
 
+void Player::set_shoot_ready(bool st)
+{
+    shoot_ready = st;
+}
+
 bool Player::is_shoot() const
 {
     return shoot_ready;
+}
+
+ClientId Player::get_id() const
+{
+    return id;
 }

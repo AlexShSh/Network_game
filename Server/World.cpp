@@ -43,11 +43,11 @@ void World::update_objects(sf::Time time)
             }
         }
 
-        if (!obj->get_active())
+        /*if (!obj->get_active())
         {
             delete obj;
             objects.erase(it);
-        }
+        }*/
     }
 }
 
@@ -85,4 +85,7 @@ void World::make_shoot(Player* player)
                           player->get_direction());
 
     objects.emplace_back(bul);
+
+    std::cout << "Player " << player->get_id() << " shoot\n";
+    player->set_shoot_ready(false);
 }

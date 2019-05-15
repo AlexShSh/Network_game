@@ -53,11 +53,14 @@ void Game::keyboard_reader()
         if (window_focused)
         {
             conf::Dir dir = keyboard.get_direction();
-            if (dir != conf::Dir::NONE)
+            bool is_shoot = keyboard.get_shoot();
+
+            packet.clear();
+            if (dir != conf::Dir::NONE || is_shoot)
             {
-                packet.clear();
-                packet << (sf::Int16) dir;
+                packet << (sf::Int16) dir << (sf::Int16) is_shoot;
             }
+
             sf::sleep(sf::milliseconds(20));
         }
 
@@ -96,7 +99,7 @@ void Game::set_active(bool b)
 
 bool Game::update_window()
 {
-    sf::Event event;
+    sf::Event event = {};
     while (window->pollEvent(event))
     {
         switch (event.type)
