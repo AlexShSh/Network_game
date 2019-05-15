@@ -14,7 +14,8 @@ class World
 public:
     World() = default;
     void create_players(std::list<ClientHandler>& clients);
-    bool update_players(std::list<ClientHandler>& clients, sf::Time time);
+    bool upd_players_from_packs(std::list<ClientHandler>& clients);
+    void update_objects(sf::Time time);
     sf::Packet create_game_state();
     void delete_disconnected(std::list<ClientId>& disconnected);
 

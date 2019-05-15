@@ -7,15 +7,21 @@ Game::Game() :
 
 void Game::update_players(sf::Packet& packet)
 {
+    sf::Int16 type_tmp;
     ClientId id;
     float x, y;
     int current_frame;
     sf::Int16 dir_tmp;
 
-    while(packet >> id >> x >> y >> dir_tmp >> current_frame)
+    while (packet >> type_tmp >> id >> x >> y >> dir_tmp >> current_frame)
     {
+        auto type = (conf::ObjectType) type_tmp;
+        if (type != conf::ObjectType::PLAYER)
+            continue;
+
         auto dir = (conf::Dir) dir_tmp;
-        if (dir == conf::Dir::NONE) {
+        if (dir == conf::Dir::NONE)
+        {
             players.erase(id);
             return;
         }

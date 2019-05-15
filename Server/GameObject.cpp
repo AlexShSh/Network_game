@@ -53,7 +53,7 @@ conf::Dir GameObject::get_direction() const
 }
 int GameObject::get_current_frame() const
 {
-    return current_frame;
+    return (int) current_frame;
 }
 
 int GameObject::animate(float time)
@@ -63,36 +63,4 @@ int GameObject::animate(float time)
         current_frame = 0;
 
     return (int) current_frame;
-}
-
-bool GameObject::update_from_packet(sf::Packet packet, sf::Time time)
-{
-    sf::Int16 dir_tmp = -1;
-    if (!(packet >> dir_tmp))
-        return false;
-
-    dir = (conf::Dir) dir_tmp;
-
-    switch (dir)
-    {
-        case conf::Dir::UP:
-            position += {0, -speed * time.asMilliseconds()};
-            animate(time.asMilliseconds());
-            break;
-        case conf::Dir::DOWN:
-            position += {0, speed * time.asMilliseconds()};
-            animate(time.asMilliseconds());
-            break;
-        case conf::Dir::LEFT:
-            position += {-speed * time.asMilliseconds(), 0};
-            animate(time.asMilliseconds());
-            break;
-        case conf::Dir::RIGHT:
-            position += {speed * time.asMilliseconds(), 0};
-            animate(time.asMilliseconds());
-        default:
-            break;
-    }
-
-    return true;
 }

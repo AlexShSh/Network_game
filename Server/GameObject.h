@@ -15,7 +15,11 @@ public:
     void set_direction(conf::Dir dir_);
     void set_speed(float speed);
     int animate(float time);
-    bool update_from_packet(sf::Packet packet, sf::Time time);
+
+    virtual void update(sf::Time time) = 0;
+    virtual void open_packet(sf::Packet packet) = 0;
+    virtual void compress_packet(sf::Packet& packet) = 0;
+    //bool update_from_packet(sf::Packet packet, sf::Time time);
 
     sf::Vector2f get_position() const;
     conf::Dir get_direction() const;
