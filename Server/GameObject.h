@@ -3,6 +3,7 @@
 #include <SFML/Network.hpp>
 
 #include "../Shared/GameConfig.h"
+#include "RectangleCollider.h"
 
 
 class GameObject
@@ -23,4 +24,5 @@ protected:
     sf::Vector2f position;
     float speed;
     Dir dir;
+    RectangleCollider collider;
 };

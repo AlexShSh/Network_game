@@ -10,7 +10,8 @@ GameObject::GameObject(float x, float y, Dir dir_) :
 GameObject::GameObject() :
     position(250, 250),
     speed(player_speed),
-    dir(LEFT)
+    dir(LEFT),
+    collider()
 {}
 
 void GameObject::set_position(sf::Vector2f &pos)
