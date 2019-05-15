@@ -9,7 +9,7 @@
 class GameObject
 {
 public:
-    GameObject(float x, float y, Dir dir_, float animation_speed, int frame_amount);
+    GameObject(float x, float y, Dir dir_, float animation_speed_, int frame_amount_, ObjectType type_);
     GameObject();
     void set_position(sf::Vector2f& pos);
     void set_direction(Dir dir_);
@@ -31,4 +31,5 @@ protected:
     float current_frame;
     int frame_amount;
     RectangleCollider collider;
+    ObjectType type;
 };

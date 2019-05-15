@@ -5,7 +5,7 @@ Game::Game() :
     window_focused(false)
 {}
 
-void Game::update_players(sf::Packet& packet, float time)
+void Game::update_players(sf::Packet& packet)
 {
     ClientId id;
     float x, y;
