@@ -26,6 +26,7 @@ public:
 protected:
     sf::Vector2f position;
     float speed;
+    float diag_speed;
     Dir dir;
     float animation_speed;
     float current_frame;

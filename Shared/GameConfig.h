@@ -5,15 +5,19 @@
 enum Dir
 {
     DOWN = 0,
-    LEFT,
+    DOWN_RIGHT,
     RIGHT,
+    UP_RIGHT,
     UP,
+    UP_LEFT,
+    LEFT,
+    DOWN_LEFT,
     NONE
 };
 
 const float player_speed = 0.2;
-const float _animation_speed = 0.005;
-const int _frame_amount = 3;
+const float _animation_speed = 0.1;
+const int _frame_amount = 16;
 const int player_health = 5;
 
 enum ObjectType

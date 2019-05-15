@@ -11,7 +11,7 @@ void World::create_players(std::list<ClientHandler> &clients)
     for (auto& cl : clients)
     {
         ClientId id = cl.get_id();
-        players.emplace(id, GameObject(100 * id, 100 * id, LEFT, _animation_speed, _frame_amount));
+        players.emplace(id, GameObject(100 * id, 100 * id, LEFT, _animation_speed, _frame_amount, PLAYER));
     }
 }
 

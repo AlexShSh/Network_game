@@ -9,7 +9,9 @@ GameObject::GameObject(float x, float y, Dir dir_, float animation_speed_, int f
     frame_amount(frame_amount_),
     collider(),
     type(type_)
-{}
+{
+    diag_speed = 0.7 * player_speed;
+}
 
 GameObject::GameObject() :
     position(250, 250),
@@ -21,7 +23,9 @@ GameObject::GameObject() :
     collider(),
     type(EMPTY)
 
-{}
+{
+    diag_speed = 0.7 * player_speed;
+}
 
 void GameObject::set_position(sf::Vector2f &pos)
 {
@@ -93,6 +97,23 @@ bool GameObject::update_from_packet(sf::Packet packet, sf::Time time)
         case RIGHT:
             position += {speed * time.asMilliseconds(), 0};
             animate(time.asMilliseconds());
+            break;
+        case UP_LEFT:
+            position += {-diag_speed * time.asMilliseconds(), -diag_speed * time.asMilliseconds()};
+            animate(time.asMilliseconds());
+            break;
+        case DOWN_LEFT:
+            position += {-diag_speed * time.asMilliseconds(), diag_speed * time.asMilliseconds()};
+            animate(time.asMilliseconds());
+            break;
+        case UP_RIGHT:
+            position += {diag_speed * time.asMilliseconds(), -diag_speed * time.asMilliseconds()};
+            animate(time.asMilliseconds());
+            break;
+        case DOWN_RIGHT:
+            position += {diag_speed * time.asMilliseconds(), diag_speed * time.asMilliseconds()};
+            animate(time.asMilliseconds());
+            break;
     }
 
     return true;
