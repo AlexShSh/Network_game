@@ -11,7 +11,7 @@ void World::create_players(std::list<ClientHandler> &clients)
     for (auto& cl : clients)
     {
         ClientId id = cl.get_id();
-        players.emplace(id, GameObject(100 * id, 100 * id, LEFT));
+        players.emplace(id, GameObject(100 * id, 100 * id, LEFT, _animation_speed, _frame_amount));
     }
 }
 
@@ -33,7 +33,7 @@ sf::Packet World::create_game_state()
     for (auto& pl : players)
     {
         packet << pl.first << pl.second.get_position().x <<
-        pl.second.get_position().y << (sf::Int16) pl.second.get_direction();
+        pl.second.get_position().y << (sf::Int16) pl.second.get_direction() << pl.second.get_current_frame();
     }
 
     return packet;

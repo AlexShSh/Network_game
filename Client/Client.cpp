@@ -1,5 +1,6 @@
 #include "Client.h"
 
+
 Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
     server_ip(serv_ip),
     server_port(serv_port),
@@ -96,7 +97,6 @@ bool Client::start(Game* game)
 
         sf::Packet send_packet = game->get_packet();
         send(send_packet);
-
     }
     game->set_active(false);
     return true;

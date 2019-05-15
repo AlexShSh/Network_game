@@ -5,24 +5,25 @@ Game::Game() :
     window_focused(false)
 {}
 
-void Game::update_players(sf::Packet& packet)
+void Game::update_players(sf::Packet& packet, float time)
 {
     ClientId id;
     float x, y;
+    int current_frame;
     sf::Int16 dir_tmp;
 
-    while (packet >> id >> x >> y >> dir_tmp)
+    while(packet >> id >> x >> y >> dir_tmp >> current_frame)
     {
         Dir dir = (Dir) dir_tmp;
-        if (dir == NONE)
-        {
+        if (dir == NONE) {
             players.erase(id);
             return;
         }
 
         if (players.count(id) == 0)
-            players.emplace(id, GraphObject("hero.png", 96, 96, x, y, dir, 0.005, 3));
+            players.emplace(id, GraphObject(&lion, 96, 96, 250, 250, LEFT));
 
+        players[id].frame_pos(dir, current_frame);
         players[id].set_position(x, y, dir);
     }
 }
@@ -32,6 +33,7 @@ void Game::start()
     window = new sf::RenderWindow(sf::VideoMode(600, 500), "Stannis Baratheon");
     window->clear();
     window->display();
+    lion.loadFromFile("hero.png");
 
     is_active = true;
 
@@ -63,6 +65,7 @@ sf::Packet Game::get_packet()
 
     return copy;
 }
+
 
 void Game::render()
 {

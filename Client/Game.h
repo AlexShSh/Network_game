@@ -13,12 +13,14 @@ public:
     Game();
     ~Game();
     void start();
-    void update_players(sf::Packet& packet);
+    void update_players(sf::Packet& packet, float time);
     void keyboard_reader();
     sf::Packet get_packet();
     void render();
     void set_active(bool b);
+
     bool update_window();
+
 
 private:
     std::map<ClientId, GraphObject> players;
@@ -27,4 +29,7 @@ private:
     sf::Packet packet;
     bool is_active;
     bool window_focused;
+    sf::Texture lion;
+
+
 };
