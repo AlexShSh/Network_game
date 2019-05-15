@@ -13,7 +13,7 @@ public:
     Game();
     ~Game();
     void start();
-    void update_players(sf::Packet& packet, float time);
+    void update_players(sf::Packet& packet);
     void keyboard_reader();
     sf::Packet get_packet();
     void render();

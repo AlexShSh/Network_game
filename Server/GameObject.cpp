@@ -1,12 +1,14 @@
 #include "GameObject.h"
 #include <iostream>
 
-GameObject::GameObject(float x, float y, Dir dir_, float animation_speed_, int frame_amount_) :
+GameObject::GameObject(float x, float y, Dir dir_, float animation_speed_, int frame_amount_, ObjectType type_) :
     position(x, y),
     speed(player_speed),
     dir(dir_),
     animation_speed(animation_speed_),
-    frame_amount(frame_amount_)
+    frame_amount(frame_amount_),
+    collider(),
+    type(type_)
 {}
 
 GameObject::GameObject() :
@@ -14,8 +16,9 @@ GameObject::GameObject() :
     speed(player_speed),
     dir(LEFT),
     animation_speed(_animation_speed),
-    frame_amount(_frame_amount)
-    collider()
+    frame_amount(_frame_amount),
+    collider(),
+    type(EMPTY)
 {}
 
 void GameObject::set_position(sf::Vector2f &pos)
