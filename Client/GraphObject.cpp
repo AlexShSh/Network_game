@@ -4,7 +4,7 @@
 #include <SFML/Graphics.hpp>
 
 GraphObject::GraphObject(sf::Texture *texture_, int width_, int height_, float x, float y,
-                         Dir dir) :
+                         conf::Dir dir) :
    width(width_),
    height(height_),
    sprite_coord(x, y),
@@ -16,7 +16,7 @@ GraphObject::GraphObject(sf::Texture *texture_, int width_, int height_, float x
     sprite.setTexture(*texture);
 }
 
-void GraphObject::set_position(float x, float y, Dir dir)
+void GraphObject::set_position(float x, float y, conf::Dir dir)
 {
     sprite_coord = sf::Vector2f(x, y);
     direction = dir;
@@ -28,10 +28,10 @@ void GraphObject::draw(sf::RenderWindow* window)
     window->draw(sprite);
 }
 
-void GraphObject::frame_pos(Dir direct, int _current_frame)
+void GraphObject::frame_pos(conf::Dir direct, int _current_frame)
 {
     current_frame = _current_frame;
     sprite.setTexture(*texture);
-    sprite.setTextureRect(sf::IntRect(width * (int)current_frame, direct * height, width, height));
+    sprite.setTextureRect(sf::IntRect(width * (int) current_frame, direct * height, width, height));
 }
 

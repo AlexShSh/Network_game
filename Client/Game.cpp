@@ -14,14 +14,14 @@ void Game::update_players(sf::Packet& packet)
 
     while(packet >> id >> x >> y >> dir_tmp >> current_frame)
     {
-        Dir dir = (Dir) dir_tmp;
-        if (dir == NONE) {
+        auto dir = (conf::Dir) dir_tmp;
+        if (dir == conf::NONE) {
             players.erase(id);
             return;
         }
 
         if (players.count(id) == 0)
-            players.emplace(id, GraphObject(&lion, 96, 96, 250, 250, LEFT));
+            players.emplace(id, GraphObject(&lion, 96, 96, 250, 250, conf::LEFT));
 
         players[id].frame_pos(dir, current_frame);
         players[id].set_position(x, y, dir);
@@ -46,8 +46,8 @@ void Game::keyboard_reader()
     {
         if (window_focused)
         {
-            Dir dir = keyboard.get_direction();
-            if (dir != NONE)
+            conf::Dir dir = keyboard.get_direction();
+            if (dir != conf::NONE)
             {
                 packet.clear();
                 packet << (sf::Int16) dir;

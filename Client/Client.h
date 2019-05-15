@@ -6,6 +6,7 @@
 #include "../Shared/NetworkDefinitions.h"
 #include "Game.h"
 
+
 class Client
 {
 public:
