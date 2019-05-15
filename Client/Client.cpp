@@ -84,8 +84,6 @@ bool Client::start(Game* game)
     sf::Thread keyboard_thread(keyboard_reader, game);
     keyboard_thread.launch();
 
-    sf::Clock timer;
-
     while (true)
     {
         if (!game->update_window())
@@ -94,7 +92,7 @@ bool Client::start(Game* game)
         if (!recieve(packet))
             break;
 
-        game->update_players(packet, timer.restart().asMilliseconds());
+        game->update_players(packet);
         game->render();
 
         sf::Packet send_packet = game->get_packet();

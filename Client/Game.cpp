@@ -1,7 +1,8 @@
 #include "Game.h"
 
 Game::Game() :
-    is_active(false)
+    is_active(false),
+    window_focused(false)
 {}
 
 void Game::update_players(sf::Packet& packet, float time)
@@ -78,7 +79,9 @@ void Game::render()
 
 Game::~Game()
 {
+    std::cout << "Endgame\n";
     window->close();
+    delete window;
 }
 
 void Game::set_active(bool b)

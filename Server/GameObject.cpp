@@ -15,6 +15,7 @@ GameObject::GameObject() :
     dir(LEFT),
     animation_speed(_animation_speed),
     frame_amount(_frame_amount)
+    collider()
 {}
 
 void GameObject::set_position(sf::Vector2f &pos)

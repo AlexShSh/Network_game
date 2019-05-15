@@ -3,6 +3,7 @@
 #include <SFML/Network.hpp>
 
 #include "../Shared/GameConfig.h"
+#include "RectangleCollider.h"
 
 
 class GameObject
@@ -26,8 +27,8 @@ protected:
     sf::Vector2f position;
     float speed;
     Dir dir;
-
     float animation_speed;
     float current_frame;
     int frame_amount;
+    RectangleCollider collider;
 };
