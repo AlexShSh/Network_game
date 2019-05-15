@@ -18,7 +18,9 @@ public:
     sf::Packet get_packet();
     void render();
     void set_active(bool b);
-    void window_clear();
+
+    bool update_window();
+
 
 private:
     std::map<ClientId, GraphObject> players;
@@ -26,5 +28,8 @@ private:
     sf::RenderWindow* window;
     sf::Packet packet;
     bool is_active;
+    bool window_focused;
+    sf::Texture lion;
+
 
 };

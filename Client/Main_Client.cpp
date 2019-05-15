@@ -3,6 +3,8 @@
 
 int main()
 {
+    XInitThreads();
+
     Client client(sf::IpAddress::LocalHost, Network::ServerPort);
     XInitThreads();
     Game game;

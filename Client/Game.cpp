@@ -4,7 +4,7 @@ Game::Game() :
     is_active(false)
 {}
 
-void Game::update_players(sf::Packet& packet, float time)
+void Game::update_players(sf::Packet& packet)
 {
     ClientId id;
     float x, y;
@@ -18,7 +18,6 @@ void Game::update_players(sf::Packet& packet, float time)
             players.erase(id);
             return;
         }
-
 
         if (players.count(id) == 0)
             players.emplace(id, GraphObject("hero.png", 96, 96, x, y, dir, 0.005, 3));
@@ -40,17 +39,19 @@ void Game::start()
 
 void Game::keyboard_reader()
 {
-    sf::Event ev;
-    ev.type = sf::Event::GainedFocus;
-    while (is_active && window->waitEvent(ev))
+    while (is_active)
     {
-        sf::sleep(sf::milliseconds(20));
-        Dir dir = keyboard.get_direction();
-        if (dir != NONE)
+        if (window_focused)
         {
-            packet.clear();
-            packet << (sf::Int16) dir;
+            Dir dir = keyboard.get_direction();
+            if (dir != NONE)
+            {
+                packet.clear();
+                packet << (sf::Int16) dir;
+            }
+            sf::sleep(sf::milliseconds(20));
         }
+
     }
 }
 
@@ -84,4 +85,28 @@ Game::~Game()
 void Game::set_active(bool b)
 {
     is_active = b;
+}
+
+bool Game::update_window()
+{
+    sf::Event event;
+    while (window->pollEvent(event))
+    {
+        switch (event.type)
+        {
+            case sf::Event::GainedFocus:
+                window_focused = true;
+                break;
+            case sf::Event::LostFocus:
+                window_focused = false;
+                break;
+            case sf::Event::Closed:
+                set_active(false);
+                window->close();
+                return false;
+            default:
+                break;
+        }
+    }
+    return true;
 }
