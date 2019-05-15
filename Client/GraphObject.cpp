@@ -3,19 +3,17 @@
 #include <iostream>
 #include <SFML/Graphics.hpp>
 
-GraphObject::GraphObject(std::string file, int width_, int height_, float x, float y,
-                         Dir dir, float animation_speed_, int frame_amount_) :
+GraphObject::GraphObject(sf::Texture *texture_, int width_, int height_, float x, float y,
+                         Dir dir) :
    width(width_),
    height(height_),
    sprite_coord(x, y),
-   direction(dir),
-   animation_speed(animation_speed_),
-   frame_amount(frame_amount_)
+   direction(dir)
+
 {
-    image.loadFromFile(file);
-    texture.loadFromImage(image);
-    sprite.setTexture(texture);
+    texture = texture_;
     sprite.setTextureRect(sf::IntRect(0, 0, width, height));
+    sprite.setTexture(*texture);
 }
 
 void GraphObject::set_position(float x, float y, Dir dir)
@@ -30,16 +28,10 @@ void GraphObject::draw(sf::RenderWindow* window)
     window->draw(sprite);
 }
 
-void GraphObject::frame_pos(Dir direct)
+void GraphObject::frame_pos(Dir direct, int _current_frame)
 {
-    sprite.setTextureRect(sf::IntRect(0, direct * height, width, height));
-}
-
-void GraphObject::animation(Dir direct, float time)
-{
-    current_frame += animation_speed * time;
-    if (current_frame > frame_amount)
-        current_frame = 0;
-
+    current_frame = _current_frame;
+    sprite.setTexture(*texture);
     sprite.setTextureRect(sf::IntRect(width * (int)current_frame, direct * height, width, height));
 }
+

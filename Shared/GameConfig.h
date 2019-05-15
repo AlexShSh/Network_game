@@ -12,3 +12,6 @@ enum Dir
 };
 
 const float player_speed = 0.2;
+const float _animation_speed = 0.005;
+const int _frame_amount = 3;
+
