@@ -22,7 +22,7 @@ void Game::update_objects(sf::Packet& packet)
         {
             if(counter == bullets.size())
                 bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
-                                                 1000, 1000, conf::Dir::LEFT));
+                                                 1500, 1000, conf::Dir::LEFT));
             update_bullet(packet, counter++);
         }
         else
@@ -30,7 +30,7 @@ void Game::update_objects(sf::Packet& packet)
     }
 
     while(counter < bullets.size())
-        bullets[counter++].set_position(1000, 1000, conf::LEFT);
+        bullets[counter++].set_position(1500, 1000, conf::LEFT);
 }
 
 
@@ -40,8 +40,9 @@ void Game::update_player(sf::Packet& packet)
     float x, y;
     int current_frame;
     sf::Int16 dir_tmp;
+    int health;
 
-    packet >> id >> x >> y >> dir_tmp >> current_frame;
+    packet >> id >> x >> y >> dir_tmp >> current_frame >> health;
 
     auto dir = (conf::Dir) dir_tmp;
 
@@ -58,6 +59,11 @@ void Game::update_player(sf::Packet& packet)
 
     players[id].frame_pos(dir, current_frame);
     players[id].set_position(x, y, dir);
+
+    player_hp << health;
+    hp.setString(player_hp.str());
+    hp.setPosition(x + 33, y + 33);
+    window->draw(hp);
 }
 
 
@@ -83,6 +89,10 @@ void Game::start()
 
     robot.loadFromFile("images/walker1.png");
     bullet.loadFromFile("images/FireBall_new.png");
+    map.loadFromFile("images/map1.png");
+
+    Map = GraphObject(&map, conf::Map::sprite_width, conf::Map::sprite_height, 0, 0, conf::DOWN);
+
 
     is_active = true;
 
@@ -122,6 +132,7 @@ sf::Packet Game::get_packet()
 void Game::render()
 {
     window->clear();
+    map_render(window);
     for (auto& pl : players)
     {
         pl.second.draw(window);
@@ -130,6 +141,7 @@ void Game::render()
     {
         bul.draw(window);
     }
+
     window->display();
 }
 
@@ -166,4 +178,17 @@ bool Game::update_window()
         }
     }
     return true;
+}
+
+void Game::map_render(sf::RenderWindow* window) {
+    for (int y = 0; y < conf::Map::frame_height; y++)
+        for (int x = 0; x < conf::Map::frame_width; x++)
+        {
+            if (conf::Map::TileMap[y][x] == ' ')
+                Map.frame_pos(conf::DOWN, 0);
+            if (conf::Map::TileMap[y][x] == '0')
+                Map.frame_pos(conf::DOWN, 1);
+            Map.set_position((x + 0.5) * conf::Map::sprite_width, (y + 0.5) * conf::Map::sprite_height, conf::NONE);
+            Map.draw(window);
+        }
 }

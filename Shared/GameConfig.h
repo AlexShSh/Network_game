@@ -19,6 +19,7 @@ enum Dir
 
 namespace Player
 {
+    const sf::String hp = "HP:";
     const char filename[] = "images/walker1.png";
     const float speed = 0.2;
     const float animation_speed = 0.1;
@@ -54,8 +55,30 @@ enum ObjectType
 
 namespace Map
 {
-    const int width = 600;
-    const int height = 500;
+    const int width = 640;
+    const int height = 512;
+    const int frame_height = 16;
+    const int frame_width = 20;
+    const int sprite_width = 32;
+    const int sprite_height = 32;
+    const sf::String TileMap[conf::Map::frame_height] = {
+            "00000000000000000000",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "0                  0",
+            "00000000000000000000",
+    };
 }
 
 }
