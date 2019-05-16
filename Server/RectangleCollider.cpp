@@ -11,7 +11,7 @@ RectangleCollider::RectangleCollider(sf::Vector2f &position, sf::Vector2f &size)
 
 void RectangleCollider::set_position(sf::Vector2f &position)
 {
-    rectangle.setPosition(position);
+    rectangle.setPosition({position.x - get_size().x, position.y - get_size().y});
 }
 
 void RectangleCollider::set_size(sf::Vector2f size)

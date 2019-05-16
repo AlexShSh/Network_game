@@ -13,8 +13,8 @@ Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
     time_after_shoot(sf::milliseconds(conf::Player::shooting_delay)),
     can_move(true)
 {
+    collider.set_size({conf::Player::obj_width, conf::Player::obj_height});
     collider.set_position(position);
-    collider.set_size({conf::Player::width, conf::Player::height});
 }
 
 void Player::open_packet(sf::Packet packet)

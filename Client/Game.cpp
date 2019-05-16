@@ -27,7 +27,7 @@ void Game::update_players(sf::Packet& packet)
         }
 
         if (players.count(id) == 0)
-            players.emplace(id, GraphObject(&lion, conf::Player::width, conf::Player::height,
+            players.emplace(id, GraphObject(&lion, conf::Player::sprite_width, conf::Player::sprite_height,
                             250, 250, conf::Dir::LEFT));
 
 

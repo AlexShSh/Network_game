@@ -18,7 +18,7 @@ GraphObject::GraphObject(sf::Texture *texture_, int width_, int height_, float x
 
 void GraphObject::set_position(float x, float y, conf::Dir dir)
 {
-    sprite_coord = sf::Vector2f(x, y);
+    sprite_coord = sf::Vector2f(x - width/2, y - height/2);
     direction = dir;
     sprite.setPosition(sprite_coord);
 }
