@@ -1,6 +1,7 @@
 #pragma once
 
 #include <map>
+#include <vector>
 
 #include "GraphObject.h"
 #include "../Shared/NetworkDefinitions.h"
@@ -13,7 +14,9 @@ public:
     Game();
     ~Game();
     void start();
-    void update_players(sf::Packet& packet);
+    void update_objects(sf::Packet& packet);
+    void update_player(ClientId id, float x, float y, conf::Dir dir, int current_frame);
+    void update_bullet(float x, float y, conf::Dir dir, int current_frame, int counter);
     void keyboard_reader();
     sf::Packet get_packet();
     void render();
@@ -24,12 +27,14 @@ public:
 
 private:
     std::map<ClientId, GraphObject> players;
+    std::vector<GraphObject> bullets;
     KeyboardInterface keyboard;
     sf::RenderWindow* window;
     sf::Packet packet;
     bool is_active;
     bool window_focused;
-    sf::Texture lion;
+    sf::Texture robot;
+    sf::Texture bullet;
 
 
 };
