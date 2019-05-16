@@ -34,7 +34,10 @@ void Bullet::update(sf::Time time, std::list<GameObject*>& objects)
 void Bullet::compress_packet(sf::Packet &packet)
 {
     if (is_active)
-        packet << (sf::Int16) type << 1 << position.x << position.y << (sf::Int16) dir << 1;
+    {
+        ClientId e = 1;
+        packet << (sf::Int16) type << e << position.x << position.y << (sf::Int16) dir << 1;
+    }
 }
 
 void Bullet::interract(std::list<GameObject *> &objects)

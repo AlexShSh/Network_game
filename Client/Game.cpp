@@ -5,35 +5,61 @@ Game::Game() :
     window_focused(false)
 {}
 
-void Game::update_players(sf::Packet& packet)
+void Game::update_objects(sf::Packet& packet)
 {
     sf::Int16 type_tmp;
     ClientId id;
     float x, y;
     int current_frame;
     sf::Int16 dir_tmp;
+    int counter = 0;
 
     while (packet >> type_tmp >> id >> x >> y >> dir_tmp >> current_frame)
     {
         auto type = (conf::ObjectType) type_tmp;
-        if (type != conf::ObjectType::PLAYER)
-            continue;
-
         auto dir = (conf::Dir) dir_tmp;
-        if (dir == conf::Dir::NONE)
+
+        if (type == conf::ObjectType::PLAYER)
+            update_player(id, x, y, dir, current_frame);
+
+        else if(type == conf::ObjectType::BULLET)
         {
-            players.erase(id);
-            return;
+
+            if(counter == bullets.size())
+                bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
+                                                 1000, 1000, conf::Dir::LEFT));
+            update_bullet(x, y, dir, current_frame, counter++);
         }
-
-        if (players.count(id) == 0)
-            players.emplace(id, GraphObject(&lion, conf::Player::sprite_width, conf::Player::sprite_height,
-                            250, 250, conf::Dir::LEFT));
-
-
-        players[id].frame_pos(dir, current_frame);
-        players[id].set_position(x, y, dir);
+        else
+            continue;
     }
+
+    while(counter < bullets.size())
+        bullets[counter++].set_position(1000, 1000, conf::LEFT);
+}
+
+
+void Game::update_player(ClientId id, float x, float y, conf::Dir dir, int current_frame)
+{
+    if (dir == conf::Dir::NONE)
+    {
+        players.erase(id);
+        return;
+    }
+
+    if (players.count(id) == 0)
+        players.emplace(id, GraphObject(&robot, conf::Player::sprite_width, conf::Player::sprite_height,
+                                        250, 250, conf::Dir::LEFT));
+
+
+    players[id].frame_pos(dir, current_frame);
+    players[id].set_position(x, y, dir);
+}
+
+void Game::update_bullet(float x, float y, conf::Dir dir, int current_frame, int counter)
+{
+    bullets[counter].frame_pos(dir, current_frame);
+    bullets[counter].set_position(x, y, dir);
 }
 
 void Game::start()
@@ -41,7 +67,13 @@ void Game::start()
     window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
     window->clear();
     window->display();
-    lion.loadFromFile("images/walker1.png");
+    robot.loadFromFile("images/walker1.png");
+    bullet.loadFromFile("images/FireBall.png");
+
+    for(int i = 0; i < 10; i++)
+        bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
+                                     1000, 1000, conf::Dir::LEFT));
+
 
     is_active = true;
 
@@ -84,6 +116,10 @@ void Game::render()
     for (auto& pl : players)
     {
         pl.second.draw(window);
+    }
+    for(auto& bul : bullets)
+    {
+        bul.draw(window);
     }
     window->display();
 }

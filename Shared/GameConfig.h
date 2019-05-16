@@ -32,11 +32,11 @@ namespace Player
 
 namespace Bullet
 {
-    const float speed = 0.3;
-    const float animation_speed = 0;
-    const int frame_amount = 1;
-    const int sprite_width = 5;
-    const int sprite_height = 5;
+    const float speed = 0.4;
+    const float animation_speed = 0.05;
+    const int frame_amount = 8;
+    const int sprite_width = 64;
+    const int sprite_height = 64;
     const int obj_width = 5;
     const int obj_height = 5;
 }
