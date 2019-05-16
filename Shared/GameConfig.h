@@ -24,6 +24,8 @@ namespace Player
     const int frame_amount = 16;
     const int health = 5;
     const int shooting_delay = 500;
+    const int width = 64;
+    const int height = 64;
 }
 
 namespace Bullet

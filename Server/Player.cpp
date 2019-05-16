@@ -10,15 +10,19 @@ Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
     moving_dir(conf::Dir::NONE),
     shoot_click(false),
     shoot_ready(false),
-    time_after_shoot(sf::milliseconds(conf::Player::shooting_delay))
-{}
+    time_after_shoot(sf::milliseconds(conf::Player::shooting_delay)),
+    can_move(true)
+{
+    collider.set_position(position);
+    collider.set_size({conf::Player::width, conf::Player::height});
+}
 
 void Player::open_packet(sf::Packet packet)
 {
     sf::Int16 dir_tmp = -1, is_shoot_tmp = 0;
     if (!(packet >> dir_tmp >> is_shoot_tmp))
     {
-        std::cout << dir_tmp << " " << is_shoot_tmp << std::endl;
+        //std::cout << dir_tmp << " " << is_shoot_tmp << std::endl;
         moving_dir = conf::Dir::NONE;
     }
     else
@@ -29,50 +33,32 @@ void Player::open_packet(sf::Packet packet)
     }
 }
 
-void Player::update(sf::Time time)
+void Player::update(sf::Time time, std::list<GameObject*>& objects)
 {
     if (!is_active)
         return;
 
     float tm = time.asMilliseconds();
-    switch (moving_dir)
+
+    if (moving_dir != conf::Dir::NONE)
     {
-        case conf::Dir::UP:
-            position += {0, -speed * tm};
+        sf::Vector2f shift = move(tm);
+
+        position += shift;
+        collider.set_position(position);
+        interract(objects);
+
+        if (!can_move)
+        {
+            position -= shift;
+            can_move = true;
+        } else
+        {
             animate(tm);
-            break;
-        case conf::Dir::DOWN:
-            position += {0, speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::LEFT:
-            position += {-speed * tm, 0};
-            animate(tm);
-            break;
-        case conf::Dir::RIGHT:
-            position += {speed * tm, 0};
-            animate(tm);
-            break;
-        case conf::Dir::UP_LEFT:
-            position += {-diag_speed * tm, -diag_speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::DOWN_LEFT:
-            position += {-diag_speed * tm, diag_speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::UP_RIGHT:
-            position += {diag_speed * tm, -diag_speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::DOWN_RIGHT:
-            position += {diag_speed * tm, diag_speed * tm};
-            animate(tm);
-            break;
-        default:
-            break;
+        }
+        collider.set_position(position);
+        moving_dir = conf::Dir::NONE;
     }
-    moving_dir = conf::Dir::NONE;
 
     time_after_shoot += time;
     if (shoot_click)
@@ -105,4 +91,55 @@ bool Player::is_shoot() const
 ClientId Player::get_id() const
 {
     return id;
+}
+
+sf::Vector2f Player::move(float tm)
+{
+    switch (moving_dir)
+    {
+        case conf::Dir::UP:
+            return  {0, -speed * tm};
+        case conf::Dir::DOWN:
+            return  {0, speed * tm};
+        case conf::Dir::LEFT:
+            return {-speed * tm, 0};
+        case conf::Dir::RIGHT:
+            return {speed * tm, 0};
+        case conf::Dir::UP_LEFT:
+            return {-diag_speed * tm, -diag_speed * tm};
+        case conf::Dir::DOWN_LEFT:
+            return {-diag_speed * tm, diag_speed * tm};
+        case conf::Dir::UP_RIGHT:
+            return  {diag_speed * tm, -diag_speed * tm};
+        case conf::Dir::DOWN_RIGHT:
+            return {diag_speed * tm, diag_speed * tm};
+        default:
+            return {0, 0};
+    }
+}
+
+void Player::interract(std::list<GameObject *>& objects)
+{
+    for (auto it = objects.begin(); it != objects.end(); it++)
+    {
+        auto obj = *it;
+        auto type = obj->get_type();
+        switch (type)
+        {
+            case conf::ObjectType::PLAYER:
+            {
+                auto plr = dynamic_cast<Player*>(obj);
+                if (plr == this)
+                    continue;
+
+                if (!collider.detect_collision(plr->get_collider()))
+                    continue;
+
+                can_move = false;
+                break;
+            }
+            default:
+                break;
+        }
+    }
 }

@@ -34,7 +34,7 @@ void World::update_objects(sf::Time time)
     {
         GameObject* obj = *it;
 
-        obj->update(time);
+        obj->update(time, objects);
 
         if (obj->get_type() == conf::ObjectType::PLAYER)
         {

@@ -25,10 +25,10 @@ void Game::update_players(sf::Packet& packet)
             players.erase(id);
             return;
         }
-        //std::cout << x << " " << y << std::endl;
-        if (players.count(id) == 0)
 
-            players.emplace(id, GraphObject(&lion, 64, 64, 250, 250, conf::Dir::LEFT));
+        if (players.count(id) == 0)
+            players.emplace(id, GraphObject(&lion, conf::Player::width, conf::Player::height,
+                            250, 250, conf::Dir::LEFT));
 
 
         players[id].frame_pos(dir, current_frame);

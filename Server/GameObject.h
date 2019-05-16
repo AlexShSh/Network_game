@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Network.hpp>
+#include <list>
 
 #include "../Shared/GameConfig.h"
 #include "RectangleCollider.h"
@@ -18,8 +19,9 @@ public:
     void set_speed(float speed);
     int animate(float time);
 
-    virtual void update(sf::Time time) = 0;
+    virtual void update(sf::Time time, std::list<GameObject*>& objects) = 0;
     virtual void compress_packet(sf::Packet& packet) = 0;
+    virtual void interract(std::list<GameObject*>& objects) = 0;
 
     sf::Vector2f get_position() const;
     conf::Dir get_direction() const;
@@ -27,6 +29,7 @@ public:
     conf::ObjectType get_type() const;
     int get_current_frame() const;
     bool get_active() const;
+    const RectangleCollider& get_collider() const;
 
 protected:
     sf::Vector2f position;

@@ -7,7 +7,7 @@ public:
     RectangleCollider() = default;
 
     void set_position(sf::Vector2f& position);
-    void set_size(sf::Vector2f& size);
+    void set_size(sf::Vector2f size);
     sf::Vector2f get_posotion() const;
     sf::Vector2f get_size() const;
 

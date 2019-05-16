@@ -5,27 +5,27 @@ GameObject::GameObject(float x, float y, conf::Dir dir_, float animation_speed_,
                        int frame_amount_, float speed_, conf::ObjectType type_) :
     position(x, y),
     speed(speed_),
+    diag_speed(0.7f * speed),
     dir(dir_),
     animation_speed(animation_speed_),
     current_frame(0),
     frame_amount(frame_amount_),
     collider(),
     type(type_),
-    is_active(true),
-    diag_speed(0.7* speed)
+    is_active(true)
 {}
 
 GameObject::GameObject() :
     position(250, 250),
     speed(0),
+    diag_speed(0.7f * speed),
     dir(conf::LEFT),
     animation_speed(0),
     current_frame(0),
     frame_amount(0),
     collider(),
     type(conf::EMPTY),
-    is_active(true),
-    diag_speed(0.7* speed)
+    is_active(true)
 {}
 
 
@@ -81,4 +81,9 @@ int GameObject::animate(float time)
 bool GameObject::get_active() const
 {
     return is_active;
+}
+
+const RectangleCollider& GameObject::get_collider() const
+{
+    return collider;
 }
