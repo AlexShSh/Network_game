@@ -5,35 +5,84 @@ Game::Game() :
     window_focused(false)
 {}
 
-void Game::update_players(sf::Packet& packet)
+void Game::update_objects(sf::Packet& packet)
+{
+    sf::Int16 type_tmp;
+    int counter = 0;
+
+    while (packet >> type_tmp)
+    {
+        auto type = (conf::ObjectType) type_tmp;
+
+
+        if (type == conf::ObjectType::PLAYER)
+            update_player(packet);
+
+        else if(type == conf::ObjectType::BULLET)
+        {
+            if(counter == bullets.size())
+                bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
+                                                 1000, 1000, conf::Dir::LEFT));
+            update_bullet(packet, counter++);
+        }
+        else
+            continue;
+    }
+
+    while(counter < bullets.size())
+        bullets[counter++].set_position(1000, 1000, conf::LEFT);
+}
+
+
+void Game::update_player(sf::Packet& packet)
 {
     ClientId id;
     float x, y;
     int current_frame;
     sf::Int16 dir_tmp;
 
-    while(packet >> id >> x >> y >> dir_tmp >> current_frame)
+    packet >> id >> x >> y >> dir_tmp >> current_frame;
+
+    auto dir = (conf::Dir) dir_tmp;
+
+    if (dir == conf::Dir::NONE)
     {
-        Dir dir = (Dir) dir_tmp;
-        if (dir == NONE) {
-            players.erase(id);
-            return;
-        }
-
-        if (players.count(id) == 0)
-            players.emplace(id, GraphObject(&lion, 96, 96, 250, 250, LEFT));
-
-        players[id].frame_pos(dir, current_frame);
-        players[id].set_position(x, y, dir);
+        players.erase(id);
+        return;
     }
+
+    if (players.count(id) == 0)
+        players.emplace(id, GraphObject(&robot, conf::Player::sprite_width, conf::Player::sprite_height,
+                                        250, 250, conf::Dir::LEFT));
+
+
+    players[id].frame_pos(dir, current_frame);
+    players[id].set_position(x, y, dir);
 }
+
+
+void Game::update_bullet(sf::Packet& packet, int counter)
+{
+    float x, y;
+    int current_frame;
+    sf::Int16 dir_tmp;
+
+    packet >> x >> y >> dir_tmp >> current_frame;
+    auto dir = (conf::Dir) dir_tmp;
+
+    bullets[counter].frame_pos(dir, current_frame);
+    bullets[counter].set_position(x, y, dir);
+}
+
 
 void Game::start()
 {
-    window = new sf::RenderWindow(sf::VideoMode(600, 500), "Stannis Baratheon");
+    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
     window->clear();
     window->display();
-    lion.loadFromFile("hero.png");
+
+    robot.loadFromFile("images/walker1.png");
+    bullet.loadFromFile("images/FireBall_new.png");
 
     is_active = true;
 
@@ -46,12 +95,15 @@ void Game::keyboard_reader()
     {
         if (window_focused)
         {
-            Dir dir = keyboard.get_direction();
-            if (dir != NONE)
+            conf::Dir dir = keyboard.get_direction();
+            bool is_shoot = keyboard.get_shoot();
+
+            packet.clear();
+            if (dir != conf::Dir::NONE || is_shoot)
             {
-                packet.clear();
-                packet << (sf::Int16) dir;
+                packet << (sf::Int16) dir << (sf::Int16) is_shoot;
             }
+
             sf::sleep(sf::milliseconds(20));
         }
 
@@ -74,12 +126,15 @@ void Game::render()
     {
         pl.second.draw(window);
     }
+    for(auto& bul : bullets)
+    {
+        bul.draw(window);
+    }
     window->display();
 }
 
 Game::~Game()
 {
-    std::cout << "Endgame\n";
     window->close();
     delete window;
 }
@@ -91,7 +146,7 @@ void Game::set_active(bool b)
 
 bool Game::update_window()
 {
-    sf::Event event;
+    sf::Event event = {};
     while (window->pollEvent(event))
     {
         switch (event.type)

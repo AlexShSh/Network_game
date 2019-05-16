@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Network.hpp>
+#include <list>
 
 #include "../Shared/GameConfig.h"
 #include "RectangleCollider.h"
@@ -9,27 +10,44 @@
 class GameObject
 {
 public:
-    GameObject(float x, float y, Dir dir_, float animation_speed_, int frame_amount_, ObjectType type_);
+    GameObject(float x, float y, conf::Dir dir_, float animation_speed_,
+               int frame_amount_, float speed_, conf::ObjectType type_);
     GameObject();
+    virtual ~GameObject() = default;
     void set_position(sf::Vector2f& pos);
-    void set_direction(Dir dir_);
+    void set_direction(conf::Dir dir_);
     void set_speed(float speed);
+    void set_active(bool act);
     int animate(float time);
-    bool update_from_packet(sf::Packet packet, sf::Time time);
+
+    virtual void update(sf::Time time, std::list<GameObject*>& objects) = 0;
+    virtual void compress_packet(sf::Packet& packet) = 0;
 
     sf::Vector2f get_position() const;
-    Dir get_direction() const;
+    conf::Dir get_direction() const;
     float get_speed() const;
-    
+    conf::ObjectType get_type() const;
     int get_current_frame() const;
+    bool get_active() const;
+    const RectangleCollider& get_collider() const;
+
+    sf::Vector2f get_shift(conf::Dir dir, float tm);
 
 protected:
     sf::Vector2f position;
     float speed;
-    Dir dir;
+
+    float diag_speed;
+    conf::Dir dir;
+
     float animation_speed;
     float current_frame;
     int frame_amount;
+
     RectangleCollider collider;
-    ObjectType type;
+    conf::ObjectType type;
+
+    bool is_active;
+
+    virtual void interract(std::list<GameObject*>& objects) = 0;
 };
