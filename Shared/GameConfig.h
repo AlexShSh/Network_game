@@ -22,15 +22,23 @@ namespace Player
     const float speed = 0.2;
     const float animation_speed = 0.1;
     const int frame_amount = 16;
-    const int health = 5;
+    const int health = 2;
     const int shooting_delay = 500;
+    const int sprite_width = 64;
+    const int sprite_height = 64;
+    const int obj_width = 40;
+    const int obj_height = 55;
 }
 
 namespace Bullet
 {
-    const float speed = 0.1;
+    const float speed = 0.3;
     const float animation_speed = 0;
     const int frame_amount = 1;
+    const int sprite_width = 5;
+    const int sprite_height = 5;
+    const int obj_width = 5;
+    const int obj_height = 5;
 }
 
 

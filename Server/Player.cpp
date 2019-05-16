@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Player.h"
+#include "Bullet.h"
 
 Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
     GameObject(x, y, dir_, conf::Player::animation_speed, conf::Player::frame_amount,
@@ -10,11 +11,18 @@ Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
     moving_dir(conf::Dir::NONE),
     shoot_click(false),
     shoot_ready(false),
-    time_after_shoot(sf::milliseconds(conf::Player::shooting_delay))
-{}
+    time_after_shoot(sf::milliseconds(conf::Player::shooting_delay)),
+    can_move(true)
+{
+    collider.set_size({conf::Player::obj_width, conf::Player::obj_height});
+    collider.set_position(position);
+}
 
 void Player::open_packet(sf::Packet packet)
 {
+    if (!is_active)
+        return;
+
     sf::Int16 dir_tmp = -1, is_shoot_tmp = 0;
     if (!(packet >> dir_tmp >> is_shoot_tmp))
     {
@@ -23,55 +31,49 @@ void Player::open_packet(sf::Packet packet)
     else
     {
         moving_dir = (conf::Dir) dir_tmp;
-        dir = (conf::Dir) dir_tmp;
+        if (moving_dir != conf::Dir::NONE)
+            dir = moving_dir;
+
         shoot_click = (bool) is_shoot_tmp;
     }
 }
 
-void Player::update(sf::Time time)
+void Player::update(sf::Time time, std::list<GameObject*>& objects)
 {
     if (!is_active)
         return;
 
     float tm = time.asMilliseconds();
-    switch (moving_dir)
+
+    if (moving_dir != conf::Dir::NONE)
     {
-        case conf::Dir::UP:
-            position += {0, -speed * tm};
+        sf::Vector2f shift = get_shift(moving_dir, tm);
+
+        position += shift;
+        collider.set_position(position);
+        interract(objects);
+
+        if (!can_move)
+        {
+            position -= shift;
+            can_move = true;
+        } else
+        {
             animate(tm);
-            break;
-        case conf::Dir::DOWN:
-            position += {0, speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::LEFT:
-            position += {-speed * tm, 0};
-            animate(tm);
-            break;
-        case conf::Dir::RIGHT:
-            position += {speed * tm, 0};
-            animate(tm);
-            break;
-        case conf::Dir::UP_LEFT:
-            position += {-diag_speed * tm, -diag_speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::DOWN_LEFT:
-            position += {-diag_speed * tm, diag_speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::UP_RIGHT:
-            position += {diag_speed * tm, -diag_speed * tm};
-            animate(tm);
-            break;
-        case conf::Dir::DOWN_RIGHT:
-            position += {diag_speed * tm, diag_speed * tm};
-            animate(tm);
-            break;
-        default:
-            break;
+        }
+        collider.set_position(position);
+        moving_dir = conf::Dir::NONE;
     }
-    moving_dir = conf::Dir::NONE;
+    else
+    {
+        interract(objects);
+    }
+
+    if (health <= 0)
+    {
+        live = false;
+        is_active = false;
+    }
 
     time_after_shoot += time;
     if (shoot_click)
@@ -104,4 +106,48 @@ bool Player::is_shoot() const
 ClientId Player::get_id() const
 {
     return id;
+}
+
+
+void Player::interract(std::list<GameObject *>& objects)
+{
+    for (auto obj : objects)
+    {
+        if (obj == this)
+            continue;
+
+        auto type = obj->get_type();
+        if (!collider.detect_collision(obj->get_collider()))
+            continue;
+
+        switch (type)
+        {
+            case conf::ObjectType::PLAYER:
+            {
+                can_move = false;
+                break;
+            }
+            case conf::ObjectType::BULLET:
+            {
+                auto bul = dynamic_cast<Bullet*>(obj);
+
+                if (this == bul->get_creator())
+                {
+                    continue;
+                }
+
+                bul->set_active(false);
+                get_damage();
+                break;
+            }
+            default:
+                break;
+        }
+    }
+}
+
+void Player::get_damage()
+{
+    health--;
+    std::cout << "!!!!!!!" << health << std::endl;
 }
