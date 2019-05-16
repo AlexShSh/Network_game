@@ -2,6 +2,7 @@
 
 #include <map>
 #include <vector>
+#include <sstream>
 
 #include "GraphObject.h"
 #include "../Shared/NetworkDefinitions.h"
@@ -21,6 +22,9 @@ public:
     sf::Packet get_packet();
     void render();
     void set_active(bool b);
+    void map_render(sf::RenderWindow* window);
+    std::ostringstream player_hp;
+    sf::Text hp;
 
     bool update_window();
 
@@ -35,6 +39,8 @@ private:
     bool window_focused;
     sf::Texture robot;
     sf::Texture bullet;
+    sf::Texture map;
+    GraphObject Map;
 
 
 };
