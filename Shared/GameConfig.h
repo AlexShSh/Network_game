@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 namespace conf
 {
 
@@ -20,7 +22,8 @@ enum Dir
 namespace Player
 {
     const sf::String hp = "HP:";
-    const char filename[] = "images/walker1.png";
+    const char filename1[] = "images/walker1.png";
+    const char filename2[] = "images/walker3.png";
     const float speed = 0.2;
     const float animation_speed = 0.1;
     const int frame_amount = 16;
@@ -57,7 +60,7 @@ namespace Map
 {
     const int width = 640;
     const int height = 512;
-
+    const char filename[] = "images/map1.png";
     const int frame_height = 16;
     const int frame_width = 20;
     const int sprite_width = 32;
@@ -80,6 +83,8 @@ namespace Map
             "0                  0",
             "00000000000000000000",
     };
+
+    const int border_width = 32;
 }
 
 }
