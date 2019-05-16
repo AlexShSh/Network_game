@@ -30,9 +30,9 @@ bool World::upd_players_from_packs(std::list<ClientHandler> &clients)
 
 void World::update_objects(sf::Time time)
 {
-    for (auto it = objects.begin(); it != objects.end(); it++)
+    for (auto it = objects.begin(); it != objects.end(); )
     {
-        auto obj = *it;
+        GameObject* obj = *it;
 
         obj->update(time);
 
@@ -45,11 +45,14 @@ void World::update_objects(sf::Time time)
             }
         }
 
-        /*if (!obj->get_active())
+        if (!obj->get_active() && obj->get_type() == conf::ObjectType::BULLET)
         {
-            delete obj;
-            objects.erase(it);
-        }*/
+            auto bul = dynamic_cast<Bullet*> (obj);
+            it = objects.erase(it);
+            disactive_bullets.emplace_back(bul);
+        }
+        else
+            it++;
     }
 }
 
@@ -83,11 +86,42 @@ void World::delete_disconnected(std::list<ClientId> &disconnected)
 
 void World::make_shoot(Player* player)
 {
-    auto bul = new Bullet(player->get_position().x, player->get_position().y,
-                          player->get_direction());
+    auto bul = get_bullet(player->get_position(), player->get_direction());
 
     objects.emplace_back(bul);
 
     std::cout << "Player " << player->get_id() << " shoot\n";
     player->set_shoot_ready(false);
+}
+
+Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_)
+{
+    if (!disactive_bullets.empty())
+    {
+        Bullet* bul = disactive_bullets.back();
+        disactive_bullets.pop_back();
+        bul->set_position(pos);
+        bul->set_direction(dir_);
+        return bul;
+    }
+    else
+    {
+        std::cout << "new bullet!\n";
+        return new Bullet(pos.x, pos.y, dir_);
+    }
+}
+
+World::~World()
+{
+    for (auto obj : objects)
+    {
+        delete obj;
+    }
+    objects.clear();
+
+    for (auto bul : disactive_bullets)
+    {
+        delete bul;
+    }
+    disactive_bullets.clear();
 }
