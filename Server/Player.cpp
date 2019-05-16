@@ -1,3 +1,4 @@
+#include <iostream>
 #include "Player.h"
 
 Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
@@ -17,6 +18,7 @@ void Player::open_packet(sf::Packet packet)
     sf::Int16 dir_tmp = -1, is_shoot_tmp = 0;
     if (!(packet >> dir_tmp >> is_shoot_tmp))
     {
+        std::cout << dir_tmp << " " << is_shoot_tmp << std::endl;
         moving_dir = conf::Dir::NONE;
     }
     else
@@ -50,6 +52,22 @@ void Player::update(sf::Time time)
         case conf::Dir::RIGHT:
             position += {speed * tm, 0};
             animate(tm);
+        case conf::Dir::UP_LEFT:
+            position += {-diag_speed * tm, -diag_speed * tm};
+            animate(tm);
+            break;
+        case conf::Dir::DOWN_LEFT:
+            position += {-diag_speed * tm, diag_speed * tm};
+            animate(tm);
+            break;
+        case conf::Dir::UP_RIGHT:
+            position += {diag_speed * tm, -diag_speed * tm};
+            animate(tm);
+            break;
+        case conf::Dir::DOWN_RIGHT:
+            position += {diag_speed * tm, diag_speed * tm};
+            animate(tm);
+            break;
         default:
             break;
     }

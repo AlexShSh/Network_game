@@ -31,6 +31,8 @@ public:
 protected:
     sf::Vector2f position;
     float speed;
+
+    float diag_speed;
     conf::Dir dir;
 
     float animation_speed;

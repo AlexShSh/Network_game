@@ -25,9 +25,11 @@ void Game::update_players(sf::Packet& packet)
             players.erase(id);
             return;
         }
-
+        std::cout << x << " " << y << std::endl;
         if (players.count(id) == 0)
-            players.emplace(id, GraphObject(&lion, 96, 96, 250, 250, conf::Dir::LEFT));
+
+            players.emplace(id, GraphObject(&lion, 64, 64, 250, 250, conf::Dir::LEFT));
+
 
         players[id].frame_pos(dir, current_frame);
         players[id].set_position(x, y, dir);
@@ -39,7 +41,7 @@ void Game::start()
     window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
     window->clear();
     window->display();
-    lion.loadFromFile("hero.png");
+    lion.loadFromFile("images/walker1.png");
 
     is_active = true;
 

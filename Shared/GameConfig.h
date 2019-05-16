@@ -6,17 +6,22 @@ namespace conf
 enum Dir
 {
     DOWN = 0,
-    LEFT,
+    DOWN_RIGHT,
     RIGHT,
+    UP_RIGHT,
     UP,
+    UP_LEFT,
+    LEFT,
+    DOWN_LEFT,
     NONE
 };
+
 
 namespace Player
 {
     const float speed = 0.2;
-    const float animation_speed = 0.005;
-    const int frame_amount = 3;
+    const float animation_speed = 0.1;
+    const int frame_amount = 16;
     const int health = 5;
     const int shooting_delay = 500;
 }
@@ -27,6 +32,7 @@ namespace Bullet
     const float animation_speed = 0;
     const int frame_amount = 1;
 }
+
 
 enum ObjectType
 {

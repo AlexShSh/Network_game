@@ -10,7 +10,8 @@ GameObject::GameObject(float x, float y, conf::Dir dir_, float animation_speed_,
     frame_amount(frame_amount_),
     collider(),
     type(type_),
-    is_active(true)
+    is_active(true),
+    diag_speed(0.7* speed)
 {}
 
 GameObject::GameObject() :
@@ -21,8 +22,10 @@ GameObject::GameObject() :
     frame_amount(0),
     collider(),
     type(conf::EMPTY),
-    is_active(true)
+    is_active(true),
+    diag_speed(0.7* speed)
 {}
+
 
 void GameObject::set_position(sf::Vector2f &pos)
 {
