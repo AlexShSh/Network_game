@@ -17,6 +17,7 @@ public:
     void set_position(sf::Vector2f& pos);
     void set_direction(conf::Dir dir_);
     void set_speed(float speed);
+    void set_active(bool act);
     int animate(float time);
 
     virtual void update(sf::Time time, std::list<GameObject*>& objects) = 0;
@@ -30,6 +31,8 @@ public:
     int get_current_frame() const;
     bool get_active() const;
     const RectangleCollider& get_collider() const;
+
+    sf::Vector2f get_shift(conf::Dir dir, float tm);
 
 protected:
     sf::Vector2f position;

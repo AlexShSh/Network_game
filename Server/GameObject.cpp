@@ -87,3 +87,33 @@ const RectangleCollider& GameObject::get_collider() const
 {
     return collider;
 }
+
+sf::Vector2f GameObject::get_shift(conf::Dir dir, float tm)
+{
+    switch (dir)
+    {
+        case conf::Dir::UP:
+            return  {0, -speed * tm};
+        case conf::Dir::DOWN:
+            return  {0, speed * tm};
+        case conf::Dir::LEFT:
+            return {-speed * tm, 0};
+        case conf::Dir::RIGHT:
+            return {speed * tm, 0};
+        case conf::Dir::UP_LEFT:
+            return {-diag_speed * tm, -diag_speed * tm};
+        case conf::Dir::DOWN_LEFT:
+            return {-diag_speed * tm, diag_speed * tm};
+        case conf::Dir::UP_RIGHT:
+            return  {diag_speed * tm, -diag_speed * tm};
+        case conf::Dir::DOWN_RIGHT:
+            return {diag_speed * tm, diag_speed * tm};
+        default:
+            return {0, 0};
+    }
+}
+
+void GameObject::set_active(bool act)
+{
+    is_active= act;
+}

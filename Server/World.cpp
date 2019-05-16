@@ -86,7 +86,7 @@ void World::delete_disconnected(std::list<ClientId> &disconnected)
 
 void World::make_shoot(Player* player)
 {
-    auto bul = get_bullet(player->get_position(), player->get_direction());
+    auto bul = get_bullet(player->get_position(), player->get_direction(), player);
 
     objects.emplace_back(bul);
 
@@ -94,7 +94,7 @@ void World::make_shoot(Player* player)
     player->set_shoot_ready(false);
 }
 
-Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_)
+Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator)
 {
     if (!disactive_bullets.empty())
     {
@@ -102,12 +102,14 @@ Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_)
         disactive_bullets.pop_back();
         bul->set_position(pos);
         bul->set_direction(dir_);
+        bul->set_active(true);
+        bul->set_creator(creator);
         return bul;
     }
     else
     {
         std::cout << "new bullet!\n";
-        return new Bullet(pos.x, pos.y, dir_);
+        return new Bullet(pos.x, pos.y, dir_, creator);
     }
 }
 

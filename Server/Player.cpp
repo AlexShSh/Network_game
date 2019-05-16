@@ -1,5 +1,6 @@
 #include <iostream>
 #include "Player.h"
+#include "Bullet.h"
 
 Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
     GameObject(x, y, dir_, conf::Player::animation_speed, conf::Player::frame_amount,
@@ -19,16 +20,20 @@ Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
 
 void Player::open_packet(sf::Packet packet)
 {
+    if (!is_active)
+        return;
+
     sf::Int16 dir_tmp = -1, is_shoot_tmp = 0;
     if (!(packet >> dir_tmp >> is_shoot_tmp))
     {
-        //std::cout << dir_tmp << " " << is_shoot_tmp << std::endl;
         moving_dir = conf::Dir::NONE;
     }
     else
     {
         moving_dir = (conf::Dir) dir_tmp;
-        dir = (conf::Dir) dir_tmp;
+        if (moving_dir != conf::Dir::NONE)
+            dir = moving_dir;
+
         shoot_click = (bool) is_shoot_tmp;
     }
 }
@@ -42,7 +47,7 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
 
     if (moving_dir != conf::Dir::NONE)
     {
-        sf::Vector2f shift = move(tm);
+        sf::Vector2f shift = get_shift(moving_dir, tm);
 
         position += shift;
         collider.set_position(position);
@@ -58,6 +63,16 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
         }
         collider.set_position(position);
         moving_dir = conf::Dir::NONE;
+    }
+    else
+    {
+        interract(objects);
+    }
+
+    if (health <= 0)
+    {
+        live = false;
+        is_active = false;
     }
 
     time_after_shoot += time;
@@ -93,53 +108,46 @@ ClientId Player::get_id() const
     return id;
 }
 
-sf::Vector2f Player::move(float tm)
-{
-    switch (moving_dir)
-    {
-        case conf::Dir::UP:
-            return  {0, -speed * tm};
-        case conf::Dir::DOWN:
-            return  {0, speed * tm};
-        case conf::Dir::LEFT:
-            return {-speed * tm, 0};
-        case conf::Dir::RIGHT:
-            return {speed * tm, 0};
-        case conf::Dir::UP_LEFT:
-            return {-diag_speed * tm, -diag_speed * tm};
-        case conf::Dir::DOWN_LEFT:
-            return {-diag_speed * tm, diag_speed * tm};
-        case conf::Dir::UP_RIGHT:
-            return  {diag_speed * tm, -diag_speed * tm};
-        case conf::Dir::DOWN_RIGHT:
-            return {diag_speed * tm, diag_speed * tm};
-        default:
-            return {0, 0};
-    }
-}
 
 void Player::interract(std::list<GameObject *>& objects)
 {
-    for (auto it = objects.begin(); it != objects.end(); it++)
+    for (auto obj : objects)
     {
-        auto obj = *it;
+        if (obj == this)
+            continue;
+
         auto type = obj->get_type();
+        if (!collider.detect_collision(obj->get_collider()))
+            continue;
+
         switch (type)
         {
             case conf::ObjectType::PLAYER:
             {
-                auto plr = dynamic_cast<Player*>(obj);
-                if (plr == this)
-                    continue;
-
-                if (!collider.detect_collision(plr->get_collider()))
-                    continue;
-
                 can_move = false;
+                break;
+            }
+            case conf::ObjectType::BULLET:
+            {
+                auto bul = dynamic_cast<Bullet*>(obj);
+
+                if (this == bul->get_creator())
+                {
+                    continue;
+                }
+
+                bul->set_active(false);
+                get_damage();
                 break;
             }
             default:
                 break;
         }
     }
+}
+
+void Player::get_damage()
+{
+    health--;
+    std::cout << "!!!!!!!" << health << std::endl;
 }

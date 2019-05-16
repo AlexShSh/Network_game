@@ -17,6 +17,8 @@ public:
     ClientId get_id() const;
     void set_shoot_ready(bool st);
 
+    void get_damage();
+
 private:
     int health;
     bool live;
@@ -26,6 +28,4 @@ private:
     bool shoot_ready;
     sf::Time time_after_shoot;
     bool can_move;
-
-    sf::Vector2f move(float tm);
 };

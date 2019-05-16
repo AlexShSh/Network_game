@@ -22,10 +22,10 @@ public:
     void delete_disconnected(std::list<ClientId>& disconnected);
     void make_shoot(Player* player);
 
-    Bullet* get_bullet(sf::Vector2f pos, conf::Dir dir_);
-
 private:
     std::map<ClientId, Player*>  players;
     std::list<GameObject*> objects;
     std::list<Bullet*> disactive_bullets;
+
+    Bullet* get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator);
 };
