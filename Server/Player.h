@@ -13,6 +13,8 @@ public:
     void update(sf::Time time) override;
 
     bool is_shoot() const;
+    ClientId get_id() const;
+    void set_shoot_ready(bool st);
 
 private:
     int health;

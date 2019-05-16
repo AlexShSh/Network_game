@@ -2,7 +2,6 @@
 
 conf::Dir KeyboardInterface::get_direction()
 {
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
@@ -26,9 +25,17 @@ conf::Dir KeyboardInterface::get_direction()
         return conf::Dir::UP;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
+
         return conf::Dir::DOWN;
     }
 
-
     return conf::Dir::NONE;
+}
+
+bool KeyboardInterface::get_shoot()
+{
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+        return true;
+
+    return false;
 }
