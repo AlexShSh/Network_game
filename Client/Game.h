@@ -15,8 +15,8 @@ public:
     ~Game();
     void start();
     void update_objects(sf::Packet& packet);
-    void update_player(ClientId id, float x, float y, conf::Dir dir, int current_frame);
-    void update_bullet(float x, float y, conf::Dir dir, int current_frame, int counter);
+    void update_player(sf::Packet& packet);
+    void update_bullet(sf::Packet& packet, int counter);
     void keyboard_reader();
     sf::Packet get_packet();
     void render();

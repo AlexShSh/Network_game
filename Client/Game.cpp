@@ -8,27 +8,22 @@ Game::Game() :
 void Game::update_objects(sf::Packet& packet)
 {
     sf::Int16 type_tmp;
-    ClientId id;
-    float x, y;
-    int current_frame;
-    sf::Int16 dir_tmp;
     int counter = 0;
 
-    while (packet >> type_tmp >> id >> x >> y >> dir_tmp >> current_frame)
+    while (packet >> type_tmp)
     {
         auto type = (conf::ObjectType) type_tmp;
-        auto dir = (conf::Dir) dir_tmp;
+
 
         if (type == conf::ObjectType::PLAYER)
-            update_player(id, x, y, dir, current_frame);
+            update_player(packet);
 
         else if(type == conf::ObjectType::BULLET)
         {
-
             if(counter == bullets.size())
                 bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
                                                  1000, 1000, conf::Dir::LEFT));
-            update_bullet(x, y, dir, current_frame, counter++);
+            update_bullet(packet, counter++);
         }
         else
             continue;
@@ -39,8 +34,17 @@ void Game::update_objects(sf::Packet& packet)
 }
 
 
-void Game::update_player(ClientId id, float x, float y, conf::Dir dir, int current_frame)
+void Game::update_player(sf::Packet& packet)
 {
+    ClientId id;
+    float x, y;
+    int current_frame;
+    sf::Int16 dir_tmp;
+
+    packet >> id >> x >> y >> dir_tmp >> current_frame;
+
+    auto dir = (conf::Dir) dir_tmp;
+
     if (dir == conf::Dir::NONE)
     {
         players.erase(id);
@@ -56,24 +60,29 @@ void Game::update_player(ClientId id, float x, float y, conf::Dir dir, int curre
     players[id].set_position(x, y, dir);
 }
 
-void Game::update_bullet(float x, float y, conf::Dir dir, int current_frame, int counter)
+
+void Game::update_bullet(sf::Packet& packet, int counter)
 {
+    float x, y;
+    int current_frame;
+    sf::Int16 dir_tmp;
+
+    packet >> x >> y >> dir_tmp >> current_frame;
+    auto dir = (conf::Dir) dir_tmp;
+
     bullets[counter].frame_pos(dir, current_frame);
     bullets[counter].set_position(x, y, dir);
 }
+
 
 void Game::start()
 {
     window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
     window->clear();
     window->display();
-    robot.loadFromFile(conf::Player::filename);
-    bullet.loadFromFile(conf::Bullet::filename);
 
-    for(int i = 0; i < 10; i++)
-        bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
-                                     1000, 1000, conf::Dir::LEFT));
-
+    robot.loadFromFile("images/walker1.png");
+    bullet.loadFromFile("images/FireBall_new.png");
 
     is_active = true;
 
