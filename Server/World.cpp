@@ -101,8 +101,9 @@ Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator)
         disactive_bullets.pop_back();
         bul->set_position(pos);
         bul->set_direction(dir_);
-        bul->set_active(true);
         bul->set_creator(creator);
+        bul->set_active(true);
+
         return bul;
     }
     else
@@ -122,4 +123,15 @@ World::~World()
         delete bul;
     }
     disactive_bullets.clear();
+}
+
+int World::disact_players_num()
+{
+    int count = 0;
+    for (auto pl : players)
+    {
+        if (!pl.second->get_active())
+            count++;
+    }
+    return count;
 }

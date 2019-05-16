@@ -50,13 +50,14 @@ enum ObjectType
     EMPTY,
     PLAYER,
     ENEMY,
-    BULLET
+    BULLET,
 };
 
 namespace Map
 {
     const int width = 640;
     const int height = 512;
+
     const int frame_height = 16;
     const int frame_width = 20;
     const int sprite_width = 32;

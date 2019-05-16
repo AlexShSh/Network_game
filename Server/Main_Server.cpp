@@ -3,10 +3,17 @@
 int main()
 {
     Server server;
+    server.connect_clients();
 
-    World world;
+    while (true)
+    {
+        World world;
 
-    server.start(&world);
+        bool status = server.start(&world);
+
+        if (!status)
+            break;
+    }
 
     return 0;
 }

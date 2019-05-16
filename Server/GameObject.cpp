@@ -32,6 +32,7 @@ GameObject::GameObject() :
 void GameObject::set_position(sf::Vector2f &pos)
 {
     position = pos;
+    collider.set_position(pos);
 }
 
 void GameObject::set_speed(float speed_)
