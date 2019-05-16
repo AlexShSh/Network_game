@@ -18,7 +18,6 @@ void Player::open_packet(sf::Packet packet)
     sf::Int16 dir_tmp = -1, is_shoot_tmp = 0;
     if (!(packet >> dir_tmp >> is_shoot_tmp))
     {
-        std::cout << dir_tmp << " " << is_shoot_tmp << std::endl;
         moving_dir = conf::Dir::NONE;
     }
     else
