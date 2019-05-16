@@ -84,10 +84,9 @@ void Server::recive()
                          status == sf::Socket::Error)
                 {
                     selector.remove(*sock);
-                    it = clients.erase(it);
-
                     disconnected.emplace_back(client.get_id());
                     cur_players--;
+                    it = clients.erase(it);
 
                     std::cout << "Client was disconected\n";
                 }

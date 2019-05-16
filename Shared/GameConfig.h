@@ -28,7 +28,7 @@ namespace Player
 
 namespace Bullet
 {
-    const float speed = 0.5;
+    const float speed = 0.1;
     const float animation_speed = 0;
     const int frame_amount = 1;
 }

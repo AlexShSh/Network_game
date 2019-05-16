@@ -40,5 +40,5 @@ void Bullet::update(sf::Time time)
 void Bullet::compress_packet(sf::Packet &packet)
 {
     if (is_active)
-        packet << (sf::Int16) type << position.x << position.y << (sf::Int16) dir;
+        packet << (sf::Int16) type << 1 << position.x << position.y << (sf::Int16) dir << 1;
 }

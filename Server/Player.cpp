@@ -52,6 +52,7 @@ void Player::update(sf::Time time)
         case conf::Dir::RIGHT:
             position += {speed * tm, 0};
             animate(tm);
+            break;
         case conf::Dir::UP_LEFT:
             position += {-diag_speed * tm, -diag_speed * tm};
             animate(tm);
