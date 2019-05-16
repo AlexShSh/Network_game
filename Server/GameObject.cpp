@@ -118,3 +118,19 @@ void GameObject::set_active(bool act)
 {
     is_active= act;
 }
+
+bool GameObject::check_border() const
+{
+    float left = position.x - collider.get_size().x / 2;
+    float right = position.x + collider.get_size().x / 2;
+    float top = position.y - collider.get_size().y / 2;
+    float bottom = position.y + collider.get_size().y / 2;
+
+    if (top < conf::Map::border_width ||
+        bottom > conf::Map::height - conf::Map::border_width ||
+        left < conf::Map::border_width ||
+        right > conf::Map::width - conf::Map::border_width)
+        return false;
+
+    return true;
+}

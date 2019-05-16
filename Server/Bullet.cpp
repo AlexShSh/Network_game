@@ -26,8 +26,9 @@ void Bullet::update(sf::Time time, std::list<GameObject*>& objects)
     position += shift;
     collider.set_position(position);
 
-    if (position.x < 0 || position.y < 0 ||
-        position.x > conf::Map::width || position.y > conf::Map::height)
+    animate(tm);
+
+    if (!check_border())
         is_active = false;
 }
 

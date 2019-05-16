@@ -9,7 +9,19 @@ void World::create_players(std::list<ClientHandler> &clients)
     {
         ClientId id = cl.get_id();
 
-        auto new_pl = new Player(100 * id, 100 * id, conf::Dir::LEFT, id);
+        float x = 0, y = 0;
+        if (id % 2)
+        {
+            x = 100 * (1 + (id / 2));
+            y = 100;
+        }
+        else
+        {
+            x = conf::Map::width - 100 * (id / 2);
+            y = conf::Map::height - 100;
+        }
+
+        auto new_pl = new Player(x, y, conf::Dir::LEFT, id);
         players.emplace(id, new_pl);
         objects.emplace_back(new_pl);
 

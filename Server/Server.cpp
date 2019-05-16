@@ -175,7 +175,7 @@ bool Server::start(World *world)
             {
                 world->delete_disconnected(disconnected);
             }
-            if (world->disact_players_num() >= clients.size() - 1)
+            if (world->disact_players_num() >= clients.size() - 1 && clients.size() != 1)
             {
                 return true;
             }
