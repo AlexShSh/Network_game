@@ -19,7 +19,7 @@ enum Dir
 
 namespace Player
 {
-    const sf::String hp = "HP:";
+    const sf::String hp = "HP: ";
     const char filename[] = "images/walker1.png";
     const float speed = 0.2;
     const float animation_speed = 0.1;
@@ -30,6 +30,10 @@ namespace Player
     const int sprite_height = 64;
     const int obj_width = 40;
     const int obj_height = 55;
+    const int text_indent_x = -20;
+    const int text_indent_y = -60;
+
+    const char font_filename[] = "images/CyrilicOld.TTF";
 }
 
 namespace Bullet
@@ -55,29 +59,38 @@ enum ObjectType
 
 namespace Map
 {
-    const int width = 640;
-    const int height = 512;
-    const int frame_height = 16;
-    const int frame_width = 20;
+    const int width = 1120;
+    const int height = 800;
+    const int frame_height = 25;
+    const int frame_width = 35;
     const int sprite_width = 32;
     const int sprite_height = 32;
     const sf::String TileMap[conf::Map::frame_height] = {
-            "00000000000000000000",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "0                  0",
-            "00000000000000000000",
+            "00000000000000000000000000000000000",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "00000000000000000000000000000000000",
     };
 }
 

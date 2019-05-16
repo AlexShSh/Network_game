@@ -23,8 +23,10 @@ public:
     void render();
     void set_active(bool b);
     void map_render(sf::RenderWindow* window);
+
     std::ostringstream player_hp;
-    sf::Text hp;
+    std::vector<sf::Text> hp;
+    sf::Font cyrilic;
 
     bool update_window();
 

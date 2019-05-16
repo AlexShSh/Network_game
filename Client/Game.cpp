@@ -53,17 +53,20 @@ void Game::update_player(sf::Packet& packet)
     }
 
     if (players.count(id) == 0)
+    {
         players.emplace(id, GraphObject(&robot, conf::Player::sprite_width, conf::Player::sprite_height,
                                         250, 250, conf::Dir::LEFT));
-
+        hp.emplace_back(sf::Text("", cirillic, 20));
+        hp.back().setFillColor(sf::Color::Red);
+    }
 
     players[id].frame_pos(dir, current_frame);
     players[id].set_position(x, y, dir);
 
     player_hp << health;
-    hp.setString(player_hp.str());
-    hp.setPosition(x + 33, y + 33);
-    window->draw(hp);
+    hp[id - 1].setString(conf::Player::hp + player_hp.str());
+    hp[id - 1].setPosition(x + conf::Player::text_indent_x, y + conf::Player::text_indent_y);
+    player_hp.str(std::string());
 }
 
 
@@ -93,6 +96,7 @@ void Game::start()
 
     Map = GraphObject(&map, conf::Map::sprite_width, conf::Map::sprite_height, 0, 0, conf::DOWN);
 
+    cyrilic.loadFromFile(conf::Player::font_filename);
 
     is_active = true;
 
@@ -134,13 +138,13 @@ void Game::render()
     window->clear();
     map_render(window);
     for (auto& pl : players)
-    {
         pl.second.draw(window);
-    }
+
     for(auto& bul : bullets)
-    {
         bul.draw(window);
-    }
+
+    for(auto& text : hp)
+        window->draw(text);
 
     window->display();
 }
