@@ -7,21 +7,29 @@ Game::Game() :
 
 void Game::update_players(sf::Packet& packet)
 {
+    sf::Int16 type_tmp;
     ClientId id;
     float x, y;
     int current_frame;
     sf::Int16 dir_tmp;
 
-    while(packet >> id >> x >> y >> dir_tmp >> current_frame)
+    while (packet >> type_tmp >> id >> x >> y >> dir_tmp >> current_frame)
     {
-        Dir dir = (Dir) dir_tmp;
-        if (dir == NONE) {
+        auto type = (conf::ObjectType) type_tmp;
+        if (type != conf::ObjectType::PLAYER)
+            continue;
+
+        auto dir = (conf::Dir) dir_tmp;
+        if (dir == conf::Dir::NONE)
+        {
             players.erase(id);
             return;
         }
-
+        std::cout << x << " " << y << std::endl;
         if (players.count(id) == 0)
-            players.emplace(id, GraphObject(&lion, 64, 64, 250, 250, LEFT));
+
+            players.emplace(id, GraphObject(&lion, 64, 64, 250, 250, conf::Dir::LEFT));
+
 
         players[id].frame_pos(dir, current_frame);
         players[id].set_position(x, y, dir);
@@ -30,7 +38,7 @@ void Game::update_players(sf::Packet& packet)
 
 void Game::start()
 {
-    window = new sf::RenderWindow(sf::VideoMode(600, 500), "Stannis Baratheon");
+    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
     window->clear();
     window->display();
     lion.loadFromFile("images/walker1.png");
@@ -46,8 +54,8 @@ void Game::keyboard_reader()
     {
         if (window_focused)
         {
-            Dir dir = keyboard.get_direction();
-            if (dir != NONE)
+            conf::Dir dir = keyboard.get_direction();
+            if (dir != conf::Dir::NONE)
             {
                 packet.clear();
                 packet << (sf::Int16) dir;
@@ -79,7 +87,6 @@ void Game::render()
 
 Game::~Game()
 {
-    std::cout << "Endgame\n";
     window->close();
     delete window;
 }

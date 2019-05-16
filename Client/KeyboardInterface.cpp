@@ -1,32 +1,34 @@
 #include "KeyboardInterface.h"
 
-Dir KeyboardInterface::get_direction()
+conf::Dir KeyboardInterface::get_direction()
 {
+
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            return UP_RIGHT;
+            return conf::Dir::UP_RIGHT;
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            return DOWN_RIGHT;
+            return conf::Dir::DOWN_RIGHT;
         else
-            return RIGHT;
+            return conf::Dir::RIGHT;
 
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::A))
     {
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
-            return UP_LEFT;
+            return conf::Dir::UP_LEFT;
         else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            return DOWN_LEFT;
+            return conf::Dir::DOWN_LEFT;
         else
-            return LEFT;
+            return conf::Dir::LEFT;
 
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::W))
     {
-        return UP;
+        return conf::Dir::UP;
     } else if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
     {
-        return DOWN;
+        return conf::Dir::DOWN;
     }
 
-    return NONE;
+
+    return conf::Dir::NONE;
 }

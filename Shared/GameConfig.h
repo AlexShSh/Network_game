@@ -1,6 +1,7 @@
 #pragma once
 
-#include <SFML/Network.hpp>
+namespace conf
+{
 
 enum Dir
 {
@@ -15,10 +16,23 @@ enum Dir
     NONE
 };
 
-const float player_speed = 0.2;
-const float _animation_speed = 0.1;
-const int _frame_amount = 16;
-const int player_health = 5;
+
+namespace Player
+{
+    const float speed = 0.2;
+    const float animation_speed = 0.1;
+    const int frame_amount = 16;
+    const int health = 5;
+    const int shooting_delay = 500;
+}
+
+namespace Bullet
+{
+    const float speed = 0.5;
+    const float animation_speed = 0;
+    const int frame_amount = 1;
+}
+
 
 enum ObjectType
 {
@@ -27,3 +41,11 @@ enum ObjectType
     ENEMY,
     BULLET
 };
+
+namespace Map
+{
+    const int width = 600;
+    const int height = 500;
+}
+
+}

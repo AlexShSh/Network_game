@@ -9,11 +9,13 @@ class GraphObject
 {
 public:
     GraphObject(sf::Texture *texture_, int width, int height, float x, float y,
-                Dir dir);
+                conf::Dir dir);
+
     GraphObject() = default;
     void draw(sf::RenderWindow* window);
-    void set_position(float x, float y, Dir dir);
-    void frame_pos(Dir direct, int current_frame);
+    void set_position(float x, float y, conf::Dir dir);
+    void frame_pos(conf::Dir direct, int current_frame);
+
 protected:
     sf::Texture *texture;
     sf::Sprite sprite;
@@ -21,7 +23,7 @@ protected:
     int width;
     int height;
     sf::Vector2f sprite_coord;
-    Dir direction;
+    conf::Dir direction;
     float current_frame;
 
 };

@@ -8,8 +8,8 @@
 class KeyboardInterface
 {
 public:
-    Dir get_direction();
+    conf::Dir get_direction();
 
 private:
-    Dir direction;
+    conf::Dir direction;
 };
