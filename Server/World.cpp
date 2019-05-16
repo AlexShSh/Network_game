@@ -90,7 +90,7 @@ void World::make_shoot(Player* player)
 
     objects.emplace_back(bul);
 
-    std::cout << "Player " << player->get_id() << " shoot\n";
+    //std::cout << "Player " << player->get_id() << " shoot\n";
     player->set_shoot_ready(false);
 }
 
@@ -108,7 +108,7 @@ Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator)
     }
     else
     {
-        std::cout << "new bullet!\n";
+        //std::cout << "new bullet!\n";
         return new Bullet(pos.x, pos.y, dir_, creator);
     }
 }

@@ -67,8 +67,8 @@ void Game::start()
     window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
     window->clear();
     window->display();
-    robot.loadFromFile("images/walker1.png");
-    bullet.loadFromFile("images/FireBall.png");
+    robot.loadFromFile(conf::Player::filename);
+    bullet.loadFromFile(conf::Bullet::filename);
 
     for(int i = 0; i < 10; i++)
         bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,

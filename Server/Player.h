@@ -11,7 +11,6 @@ public:
 
     void compress_packet(sf::Packet& packet) override;
     void update(sf::Time time, std::list<GameObject*>& objects) override;
-    void interract(std::list<GameObject *>& objects) override;
 
     bool is_shoot() const;
     ClientId get_id() const;
@@ -21,11 +20,13 @@ public:
 
 private:
     int health;
-    bool live;
     ClientId id;
     conf::Dir moving_dir;
     bool shoot_click;
     bool shoot_ready;
     sf::Time time_after_shoot;
     bool can_move;
+
+    void check_border();
+    void interract(std::list<GameObject *>& objects) override;
 };

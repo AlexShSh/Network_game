@@ -19,10 +19,11 @@ enum Dir
 
 namespace Player
 {
+    const char filename[] = "images/walker1.png";
     const float speed = 0.2;
     const float animation_speed = 0.1;
     const int frame_amount = 16;
-    const int health = 2;
+    const int health = 5;
     const int shooting_delay = 500;
     const int sprite_width = 64;
     const int sprite_height = 64;
@@ -32,13 +33,14 @@ namespace Player
 
 namespace Bullet
 {
+    const char filename[] = "images/FireBall_new.png";
     const float speed = 0.4;
     const float animation_speed = 0.05;
     const int frame_amount = 8;
     const int sprite_width = 64;
     const int sprite_height = 64;
-    const int obj_width = 5;
-    const int obj_height = 5;
+    const int obj_width = 20;
+    const int obj_height = 20;
 }
 
 

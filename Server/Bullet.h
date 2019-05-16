@@ -10,7 +10,6 @@ public:
 
     void update(sf::Time time, std::list<GameObject*>& objects) override;
     void compress_packet(sf::Packet& packet) override;
-    void interract(std::list<GameObject*>& objects) override;
 
     Player* get_creator() const;
     void set_creator(Player* pl);
@@ -18,4 +17,6 @@ public:
 
 private:
     Player* creator;
+
+    void interract(std::list<GameObject*>& objects) override;
 };

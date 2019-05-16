@@ -36,8 +36,9 @@ void Bullet::compress_packet(sf::Packet &packet)
     if (is_active)
     {
         ClientId e = 1;
-        packet << (sf::Int16) type << e << position.x << position.y << (sf::Int16) dir << 1;
+        packet << (sf::Int16) type << e << position.x << position.y << (sf::Int16) dir << get_current_frame();
     }
+
 }
 
 void Bullet::interract(std::list<GameObject *> &objects)
