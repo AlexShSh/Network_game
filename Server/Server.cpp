@@ -146,18 +146,19 @@ Server::~Server()
 
 bool Server::start(World *world)
 {
-    connect_clients();
-
     world->create_players(clients);
 
     sf::Clock timer;
+    int restart_counter = 0;
 
     while (true)
     {
         if (timer.getElapsedTime().asMilliseconds() >= con_delay)
         {
             if (!world->upd_players_from_packs(clients))
-                break;
+            {
+                return false;
+            }
 
             world->update_objects(timer.restart());
 
@@ -174,6 +175,12 @@ bool Server::start(World *world)
             if (!disconnected.empty())
             {
                 world->delete_disconnected(disconnected);
+            }
+            if (world->disact_players_num() >= clients.size() - 1 && clients.size() != 1)
+            {
+                restart_counter++;
+                if (restart_counter >= Network::RestartWaiting)
+                    return true;
             }
         }
     }

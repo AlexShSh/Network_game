@@ -54,10 +54,13 @@ void Game::update_player(sf::Packet& packet)
 
     if (players.count(id) == 0)
     {
-        players.emplace(id, GraphObject(&robot, conf::Player::sprite_width, conf::Player::sprite_height,
-                                        250, 250, conf::Dir::LEFT));
-        hp.emplace_back(sf::Text("", cirillic, 20));
+    sf::Texture* tx = (id % 2 ? &robot1 : &robot2);
+
+    players.emplace(id, GraphObject(tx, conf::Player::sprite_width, conf::Player::sprite_height,
+                                    250, 250, conf::Dir::LEFT));
+        hp.emplace_back(sf::Text("", cyrilic, 20));
         hp.back().setFillColor(sf::Color::Red);
+
     }
 
     players[id].frame_pos(dir, current_frame);
@@ -90,9 +93,10 @@ void Game::start()
     window->clear();
     window->display();
 
-    robot.loadFromFile("images/walker1.png");
-    bullet.loadFromFile("images/FireBall_new.png");
-    map.loadFromFile("images/map1.png");
+    robot1.loadFromFile(conf::Player::filename1);
+    robot2.loadFromFile(conf::Player::filename2);
+    bullet.loadFromFile(conf::Bullet::filename);
+    map.loadFromFile(conf::Map::filename);
 
     Map = GraphObject(&map, conf::Map::sprite_width, conf::Map::sprite_height, 0, 0, conf::DOWN);
 

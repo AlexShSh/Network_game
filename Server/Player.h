@@ -27,6 +27,5 @@ private:
     sf::Time time_after_shoot;
     bool can_move;
 
-    void check_border();
     void interract(std::list<GameObject *>& objects) override;
 };

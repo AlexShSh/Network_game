@@ -39,7 +39,9 @@ private:
     sf::Packet packet;
     bool is_active;
     bool window_focused;
-    sf::Texture robot;
+
+    sf::Texture robot1;
+    sf::Texture robot2;
     sf::Texture bullet;
     sf::Texture map;
     GraphObject Map;
