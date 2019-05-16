@@ -49,13 +49,13 @@ enum ObjectType
     EMPTY,
     PLAYER,
     ENEMY,
-    BULLET
+    BULLET,
 };
 
 namespace Map
 {
-    const int width = 600;
-    const int height = 500;
+    const int width = 640;
+    const int height = 512;
 }
 
 }

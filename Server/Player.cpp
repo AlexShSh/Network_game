@@ -112,6 +112,9 @@ void Player::interract(std::list<GameObject *>& objects)
 {
     for (auto obj : objects)
     {
+        if (!obj->get_active())
+            continue;
+
         if (obj == this)
             continue;
 
@@ -134,6 +137,8 @@ void Player::interract(std::list<GameObject *>& objects)
                 {
                     continue;
                 }
+
+                std::cout << position.x << " " << position.y << " / " << obj->get_position().x << " " << obj->get_position().y << std::endl;
 
                 bul->set_active(false);
                 get_damage();
