@@ -34,9 +34,8 @@ void Bullet::update(sf::Time time, std::list<GameObject*>& objects)
 void Bullet::compress_packet(sf::Packet &packet)
 {
     if (is_active)
-    {
         packet << (sf::Int16) type << position.x << position.y << (sf::Int16) dir << get_current_frame();
-    }
+
 }
 
 void Bullet::interract(std::list<GameObject *> &objects)

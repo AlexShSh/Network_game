@@ -22,7 +22,6 @@ public:
 
     virtual void update(sf::Time time, std::list<GameObject*>& objects) = 0;
     virtual void compress_packet(sf::Packet& packet) = 0;
-    virtual void interract(std::list<GameObject*>& objects) = 0;
 
     sf::Vector2f get_position() const;
     conf::Dir get_direction() const;
@@ -49,4 +48,6 @@ protected:
     conf::ObjectType type;
 
     bool is_active;
+
+    virtual void interract(std::list<GameObject*>& objects) = 0;
 };

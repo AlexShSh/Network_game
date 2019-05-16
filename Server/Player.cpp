@@ -6,7 +6,6 @@ Player::Player(float x, float y, conf::Dir dir_, ClientId id_) :
     GameObject(x, y, dir_, conf::Player::animation_speed, conf::Player::frame_amount,
               conf::Player::speed, conf::ObjectType::PLAYER),
     health(conf::Player::health),
-    live(true),
     id(id_),
     moving_dir(conf::Dir::NONE),
     shoot_click(false),
@@ -52,6 +51,7 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
         position += shift;
         collider.set_position(position);
         interract(objects);
+        check_border();
 
         if (!can_move)
         {
@@ -71,7 +71,6 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
 
     if (health <= 0)
     {
-        live = false;
         is_active = false;
     }
 
@@ -150,4 +149,18 @@ void Player::get_damage()
 {
     health--;
     std::cout << "!!!!!!!" << health << std::endl;
+}
+
+void Player::check_border()
+{
+    float left = position.x - collider.get_size().x / 2;
+    float right = position.x + collider.get_size().x / 2;
+    float top = position.y - collider.get_size().y / 2;
+    float bottom = position.y + collider.get_size().y / 2;
+
+    if (top < 0 ||
+        bottom > conf::Map::height ||
+        left < 0 ||
+        right > conf::Map::width)
+        can_move = false;
 }

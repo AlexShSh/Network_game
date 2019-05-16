@@ -90,6 +90,10 @@ void World::make_shoot(Player* player)
 
     objects.emplace_back(bul);
 
+<<<<<<< HEAD
+=======
+    //std::cout << "Player " << player->get_id() << " shoot\n";
+>>>>>>> upstream/graph_engine
     player->set_shoot_ready(false);
 }
 
