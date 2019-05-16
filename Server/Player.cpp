@@ -114,9 +114,6 @@ void Player::interract(std::list<GameObject *>& objects)
 {
     for (auto obj : objects)
     {
-        if (!obj->get_active())
-            continue;
-
         if (obj == this)
             continue;
 

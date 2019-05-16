@@ -12,7 +12,6 @@ Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
 
     if (status != sf::Socket::Done)
     {
-        std::cout << "Can't connect to server" << std::endl;
         throw std::runtime_error("Can't connect to server");
     }
 

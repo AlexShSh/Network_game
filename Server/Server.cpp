@@ -149,6 +149,7 @@ bool Server::start(World *world)
     world->create_players(clients);
 
     sf::Clock timer;
+    int restart_counter = 0;
 
     while (true)
     {
@@ -177,7 +178,9 @@ bool Server::start(World *world)
             }
             if (world->disact_players_num() >= clients.size() - 1 && clients.size() != 1)
             {
-                return true;
+                restart_counter++;
+                if (restart_counter >= Network::RestartWaiting)
+                    return true;
             }
         }
     }
