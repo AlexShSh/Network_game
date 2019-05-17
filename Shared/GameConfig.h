@@ -37,7 +37,7 @@ namespace Player
     const int text_indent_x = -20;
     const int text_indent_y = -60;
 
-    const char font_filename[] = "images/CyrilicOld.TTF";
+    const char font_filename[] = "images/CyrilicOld.ttf";
 }
 
 namespace Bullet
@@ -100,6 +100,8 @@ namespace Map
     };
 
     const int border_width = 32;
+
+    const char window_name[] = "Clash of Robots";
 }
 
 }

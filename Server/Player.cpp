@@ -150,6 +150,5 @@ void Player::interract(std::list<GameObject *>& objects)
 void Player::get_damage()
 {
     health--;
-    std::cout << "!!!!!!!" << health << std::endl;
 }
 
