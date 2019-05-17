@@ -13,7 +13,7 @@ enum
     ServerPort = 5678,
     ConnectionDelay = 30,
     RestartWaiting = 100,
-    MaxPlayersNum = 2
+    MaxPlayersNum = 1
 };
 
 }

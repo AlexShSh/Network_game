@@ -12,7 +12,7 @@ int main()
 
         sf::IpAddress server_ip(str);
 
-        Client client(server_ip, Network::ServerPort);
+        Client client(sf::IpAddress::LocalHost, Network::ServerPort);
         Game game;
 
         client.start(&game);

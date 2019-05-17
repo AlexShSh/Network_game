@@ -26,6 +26,10 @@ void World::create_players(std::list<ClientHandler> &clients)
         objects.emplace_back(new_pl);
 
     }
+    
+    auto enemy = new Enemy(500, 500, conf::Dir::RIGHT, 0);
+    enemies.emplace_back(enemy);
+    objects.emplace_back(enemy);
 }
 
 bool World::upd_players_from_packs(std::list<ClientHandler> &clients)
@@ -56,7 +60,6 @@ void World::update_objects(sf::Time time)
                 make_shoot(player);
             }
         }
-
         if (!obj->get_active() && obj->get_type() == conf::ObjectType::BULLET)
         {
             auto bul = dynamic_cast<Bullet*> (obj);
@@ -135,6 +138,12 @@ World::~World()
         delete bul;
     }
     disactive_bullets.clear();
+    
+    for (auto enemy : enemies) 
+    {
+        delete enemy;
+    }
+    enemies.clear();
 }
 
 int World::disact_players_num()

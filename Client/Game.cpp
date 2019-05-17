@@ -25,6 +25,8 @@ void Game::update_objects(sf::Packet& packet)
                         conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::Dir::LEFT));
             update_bullet(packet, counter++);
         }
+        else if(type == conf::ObjectType::ENEMY)
+            update_ememy(packet);
         else
             continue;
     }
@@ -73,6 +75,32 @@ void Game::update_player(sf::Packet& packet)
     player_hp.str(std::string());
 }
 
+void Game::update_ememy(sf::Packet &packet)
+{
+    float x, y;
+    int current_frame;
+    sf::Int16 dir_tmp;
+    int number;
+
+    packet >> number >> x >> y >> dir_tmp >> current_frame;
+
+    auto dir = (conf::Dir) dir_tmp;
+
+    if (dir == conf::Dir::NONE)
+    {
+        enemies.erase(enemies.begin() + number);
+        return;
+    }
+
+    if (number + 1 >  enemies.size())
+    {
+        enemies.emplace_back(GraphObject(&enemy, conf::Enemy::sprite_width, conf::Enemy::sprite_height,
+                                        250, 250, conf::Dir::LEFT));
+    }
+
+    enemies[number].frame_pos(dir, current_frame);
+    enemies[number].set_position(x, y, dir);
+}
 
 void Game::update_bullet(sf::Packet& packet, int counter)
 {
@@ -97,6 +125,7 @@ void Game::start()
     robot1.loadFromFile(conf::Player::filename1);
     robot2.loadFromFile(conf::Player::filename2);
     bullet.loadFromFile(conf::Bullet::filename);
+    enemy.loadFromFile(conf::Enemy::filename);
     map.loadFromFile(conf::Map::filename);
 
     Map = GraphObject(&map, conf::Map::sprite_width, conf::Map::sprite_height, 0, 0, conf::DOWN);
@@ -151,6 +180,9 @@ void Game::render()
     for(auto& text : hp)
         window->draw(text);
 
+    for(auto& en : enemies)
+        en.draw(window);
+
     window->display();
 }
 
@@ -193,9 +225,9 @@ void Game::map_render(sf::RenderWindow* window) {
     for (int y = 0; y < conf::Map::frame_height; y++)
         for (int x = 0; x < conf::Map::frame_width; x++)
         {
-            if (conf::Map::TileMap[y][x] == ' ')
+            if(conf::Map::TileMap[y][x] == ' ')
                 Map.frame_pos(conf::DOWN, 0);
-            if (conf::Map::TileMap[y][x] == '0')
+            if(conf::Map::TileMap[y][x] == '0')
                 Map.frame_pos(conf::DOWN, 1);
             Map.set_position((x + 0.5) * conf::Map::sprite_width, (y + 0.5) * conf::Map::sprite_height, conf::NONE);
             Map.draw(window);

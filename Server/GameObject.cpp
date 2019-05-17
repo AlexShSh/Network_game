@@ -134,3 +134,8 @@ bool GameObject::check_border() const
 
     return true;
 }
+
+float GameObject::distance(sf::Vector2f pos)
+{
+    return (position.x - pos.x) * (position.x - pos.x) + (position.y - pos.y) * (position.y - pos.y);
+}

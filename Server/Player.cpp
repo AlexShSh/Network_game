@@ -128,6 +128,13 @@ void Player::interract(std::list<GameObject *>& objects)
                 can_move = false;
                 break;
             }
+
+            case conf::ObjectType::ENEMY:
+            {
+                can_move = false;
+                break;
+            }
+            
             case conf::ObjectType::BULLET:
             {
                 auto bul = dynamic_cast<Bullet*>(obj);

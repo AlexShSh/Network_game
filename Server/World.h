@@ -8,6 +8,7 @@
 #include "Bullet.h"
 #include "../Shared/NetworkDefinitions.h"
 #include "ClientHandler.h"
+#include "Enemy.h"
 
 
 class World
@@ -27,6 +28,7 @@ private:
     std::map<ClientId, Player*>  players;
     std::list<GameObject*> objects;
     std::list<Bullet*> disactive_bullets;
-
+    std::list<Enemy*> enemies;
+    
     Bullet* get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator);
 };

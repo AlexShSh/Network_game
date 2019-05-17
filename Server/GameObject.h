@@ -30,6 +30,7 @@ public:
     int get_current_frame() const;
     bool get_active() const;
     const RectangleCollider& get_collider() const;
+    float distance(sf::Vector2f pos);
 
     sf::Vector2f get_shift(conf::Dir dir, float tm);
 

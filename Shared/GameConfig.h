@@ -37,7 +37,7 @@ namespace Player
     const int text_indent_x = -20;
     const int text_indent_y = -60;
 
-    const char font_filename[] = "images/CyrilicOld.ttf";
+    const char font_filename[] = "images/CyrilicOld.TTF";
 }
 
 namespace Bullet
@@ -52,6 +52,19 @@ namespace Bullet
     const int obj_height = 20;
     const float default_pos_x = 1500;
     const float default_pos_y = 1000;
+}
+
+namespace Enemy
+{
+    const char filename[] = "images/Devil.png";
+    const float speed = 0.2;
+    const float animation_speed = 0.03;
+    const int frame_amount = 8;
+    const int sprite_width = 96;
+    const int sprite_height = 96;
+    const int obj_width = 40;
+    const int obj_height = 55;
+    const int health = 5;
 }
 
 
