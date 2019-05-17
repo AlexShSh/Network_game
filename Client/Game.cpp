@@ -90,7 +90,7 @@ void Game::update_bullet(sf::Packet& packet, int counter)
 
 void Game::start()
 {
-    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
+    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), conf::Map::window_name);
     window->clear();
     window->display();
 
