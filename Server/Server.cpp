@@ -191,6 +191,7 @@ void Server::add_disconnected_packet(sf::Packet &packet)
 {
     for (auto cl : disconnected)
     {
-        packet << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f << (sf::Int16) conf::Dir::NONE << -1.f;
+        packet << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f
+                << (sf::Int16) conf::Dir::NONE << -1.f << -1.f;
     }
 }

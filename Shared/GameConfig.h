@@ -50,6 +50,8 @@ namespace Bullet
     const int sprite_height = 64;
     const int obj_width = 20;
     const int obj_height = 20;
+    const float default_pos_x = 1500;
+    const float default_pos_y = 1000;
 }
 
 

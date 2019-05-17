@@ -22,7 +22,7 @@ void Game::update_objects(sf::Packet& packet)
         {
             if(counter == bullets.size())
                 bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
-                                                 1500, 1000, conf::Dir::LEFT));
+                        conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::Dir::LEFT));
             update_bullet(packet, counter++);
         }
         else
@@ -30,7 +30,7 @@ void Game::update_objects(sf::Packet& packet)
     }
 
     while(counter < bullets.size())
-        bullets[counter++].set_position(1500, 1000, conf::LEFT);
+        bullets[counter++].set_position(conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::LEFT);
 }
 
 
@@ -49,6 +49,7 @@ void Game::update_player(sf::Packet& packet)
     if (dir == conf::Dir::NONE)
     {
         players.erase(id);
+        hp.erase(hp.begin() + id - 1);
         return;
     }
 
