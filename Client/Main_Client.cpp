@@ -4,11 +4,26 @@
 int main()
 {
     XInitThreads();
+    try
+    {
+        std::cout << "Enter server ip: ";
+        std::string str;
+        std::cin >> str;
 
-    Client client(sf::IpAddress::LocalHost, Network::ServerPort);
-    Game game;
+        sf::IpAddress server_ip(str);
 
-    client.start(&game);
+        Client client(server_ip, Network::ServerPort);
+        Game game;
+
+        client.start(&game);
+    }
+    catch (std::runtime_error& err)
+    {
+        std::cout << err.what() << std::endl;
+    }
 
     return 0;
 }
+
+//sf::IpAddress::LocalHost
+

@@ -51,7 +51,9 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
         position += shift;
         collider.set_position(position);
         interract(objects);
-        check_border();
+
+        if(!check_border())
+            can_move = false;
 
         if (!can_move)
         {
@@ -89,7 +91,7 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
 void Player::compress_packet(sf::Packet &packet)
 {
     packet << (sf::Int16) type << id << position.x << position.y <<
-          (sf::Int16) dir << get_current_frame();
+          (sf::Int16) dir << get_current_frame() << health;
 }
 
 void Player::set_shoot_ready(bool st)
@@ -148,19 +150,5 @@ void Player::interract(std::list<GameObject *>& objects)
 void Player::get_damage()
 {
     health--;
-    std::cout << "!!!!!!!" << health << std::endl;
 }
 
-void Player::check_border()
-{
-    float left = position.x - collider.get_size().x / 2;
-    float right = position.x + collider.get_size().x / 2;
-    float top = position.y - collider.get_size().y / 2;
-    float bottom = position.y + collider.get_size().y / 2;
-
-    if (top < 0 ||
-        bottom > conf::Map::height ||
-        left < 0 ||
-        right > conf::Map::width)
-        can_move = false;
-}

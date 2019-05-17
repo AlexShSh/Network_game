@@ -3,7 +3,6 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 
-#include "../Shared/NetworkDefinitions.h"
 #include "Game.h"
 
 

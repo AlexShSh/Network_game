@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 namespace conf
 {
 
@@ -19,7 +21,10 @@ enum Dir
 
 namespace Player
 {
-    const char filename[] = "images/walker1.png";
+
+    const sf::String hp = "HP:";
+    const char filename1[] = "images/walker1.png";
+    const char filename2[] = "images/walker3.png";
     const float speed = 0.2;
     const float animation_speed = 0.1;
     const int frame_amount = 16;
@@ -29,6 +34,10 @@ namespace Player
     const int sprite_height = 64;
     const int obj_width = 40;
     const int obj_height = 55;
+    const int text_indent_x = -20;
+    const int text_indent_y = -60;
+
+    const char font_filename[] = "images/CyrilicOld.ttf";
 }
 
 namespace Bullet
@@ -49,13 +58,50 @@ enum ObjectType
     EMPTY,
     PLAYER,
     ENEMY,
-    BULLET
+    BULLET,
 };
 
 namespace Map
 {
-    const int width = 600;
-    const int height = 500;
+    const int width = 1120;
+    const int height = 800;
+    const char filename[] = "images/map1.png";
+    const int frame_height = 25;
+    const int frame_width = 35;
+
+    const int sprite_width = 32;
+    const int sprite_height = 32;
+    const sf::String TileMap[conf::Map::frame_height] = {
+            "00000000000000000000000000000000000",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "0                                 0",
+            "00000000000000000000000000000000000",
+    };
+
+    const int border_width = 32;
+
+    const char window_name[] = "Clash of Robots";
 }
 
 }

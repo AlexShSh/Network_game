@@ -22,7 +22,7 @@ void Game::update_objects(sf::Packet& packet)
         {
             if(counter == bullets.size())
                 bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
-                                                 1000, 1000, conf::Dir::LEFT));
+                                                 1500, 1000, conf::Dir::LEFT));
             update_bullet(packet, counter++);
         }
         else
@@ -30,7 +30,7 @@ void Game::update_objects(sf::Packet& packet)
     }
 
     while(counter < bullets.size())
-        bullets[counter++].set_position(1000, 1000, conf::LEFT);
+        bullets[counter++].set_position(1500, 1000, conf::LEFT);
 }
 
 
@@ -40,24 +40,37 @@ void Game::update_player(sf::Packet& packet)
     float x, y;
     int current_frame;
     sf::Int16 dir_tmp;
+    int health;
 
-    packet >> id >> x >> y >> dir_tmp >> current_frame;
+    packet >> id >> x >> y >> dir_tmp >> current_frame >> health;
 
     auto dir = (conf::Dir) dir_tmp;
 
     if (dir == conf::Dir::NONE)
     {
         players.erase(id);
+        hp.erase(hp.begin() + id - 1);
         return;
     }
 
     if (players.count(id) == 0)
-        players.emplace(id, GraphObject(&robot, conf::Player::sprite_width, conf::Player::sprite_height,
-                                        250, 250, conf::Dir::LEFT));
+    {
+    sf::Texture* tx = (id % 2 ? &robot1 : &robot2);
 
+    players.emplace(id, GraphObject(tx, conf::Player::sprite_width, conf::Player::sprite_height,
+                                    250, 250, conf::Dir::LEFT));
+        hp.emplace_back(sf::Text("", cyrilic, 20));
+        hp.back().setFillColor(sf::Color::Red);
+
+    }
 
     players[id].frame_pos(dir, current_frame);
     players[id].set_position(x, y, dir);
+
+    player_hp << health;
+    hp[id - 1].setString(conf::Player::hp + player_hp.str());
+    hp[id - 1].setPosition(x + conf::Player::text_indent_x, y + conf::Player::text_indent_y);
+    player_hp.str(std::string());
 }
 
 
@@ -77,12 +90,18 @@ void Game::update_bullet(sf::Packet& packet, int counter)
 
 void Game::start()
 {
-    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), "Stannis Baratheon");
+    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), conf::Map::window_name);
     window->clear();
     window->display();
 
-    robot.loadFromFile("images/walker1.png");
-    bullet.loadFromFile("images/FireBall_new.png");
+    robot1.loadFromFile(conf::Player::filename1);
+    robot2.loadFromFile(conf::Player::filename2);
+    bullet.loadFromFile(conf::Bullet::filename);
+    map.loadFromFile(conf::Map::filename);
+
+    Map = GraphObject(&map, conf::Map::sprite_width, conf::Map::sprite_height, 0, 0, conf::DOWN);
+
+    cyrilic.loadFromFile(conf::Player::font_filename);
 
     is_active = true;
 
@@ -122,14 +141,16 @@ sf::Packet Game::get_packet()
 void Game::render()
 {
     window->clear();
+    map_render(window);
     for (auto& pl : players)
-    {
         pl.second.draw(window);
-    }
+
     for(auto& bul : bullets)
-    {
         bul.draw(window);
-    }
+
+    for(auto& text : hp)
+        window->draw(text);
+
     window->display();
 }
 
@@ -166,4 +187,17 @@ bool Game::update_window()
         }
     }
     return true;
+}
+
+void Game::map_render(sf::RenderWindow* window) {
+    for (int y = 0; y < conf::Map::frame_height; y++)
+        for (int x = 0; x < conf::Map::frame_width; x++)
+        {
+            if (conf::Map::TileMap[y][x] == ' ')
+                Map.frame_pos(conf::DOWN, 0);
+            if (conf::Map::TileMap[y][x] == '0')
+                Map.frame_pos(conf::DOWN, 1);
+            Map.set_position((x + 0.5) * conf::Map::sprite_width, (y + 0.5) * conf::Map::sprite_height, conf::NONE);
+            Map.draw(window);
+        }
 }

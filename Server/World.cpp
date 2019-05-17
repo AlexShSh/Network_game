@@ -9,7 +9,19 @@ void World::create_players(std::list<ClientHandler> &clients)
     {
         ClientId id = cl.get_id();
 
-        auto new_pl = new Player(100 * id, 100 * id, conf::Dir::LEFT, id);
+        float x = 0, y = 0;
+        if (id % 2)
+        {
+            x = 100 * (1 + (id / 2));
+            y = 100;
+        }
+        else
+        {
+            x = conf::Map::width - 100 * (id / 2);
+            y = conf::Map::height - 100;
+        }
+
+        auto new_pl = new Player(x, y, conf::Dir::LEFT, id);
         players.emplace(id, new_pl);
         objects.emplace_back(new_pl);
 
@@ -101,8 +113,9 @@ Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator)
         disactive_bullets.pop_back();
         bul->set_position(pos);
         bul->set_direction(dir_);
-        bul->set_active(true);
         bul->set_creator(creator);
+        bul->set_active(true);
+
         return bul;
     }
     else
@@ -122,4 +135,15 @@ World::~World()
         delete bul;
     }
     disactive_bullets.clear();
+}
+
+int World::disact_players_num()
+{
+    int count = 0;
+    for (auto pl : players)
+    {
+        if (!pl.second->get_active())
+            count++;
+    }
+    return count;
 }

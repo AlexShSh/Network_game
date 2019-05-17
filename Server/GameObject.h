@@ -50,4 +50,5 @@ protected:
     bool is_active;
 
     virtual void interract(std::list<GameObject*>& objects) = 0;
+    bool check_border() const;
 };

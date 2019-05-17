@@ -21,6 +21,7 @@ public:
     sf::Packet create_game_state();
     void delete_disconnected(std::list<ClientId>& disconnected);
     void make_shoot(Player* player);
+    int disact_players_num();
 
 private:
     std::map<ClientId, Player*>  players;
