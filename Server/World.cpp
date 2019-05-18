@@ -3,20 +3,15 @@
 #include <iostream>
 
 
-void World::create_players(std::list<ClientHandler> &clients)
-{
-    for (auto& cl : clients)
-    {
+void World::create_players(std::list<ClientHandler> &clients) {
+    for (auto &cl : clients) {
         ClientId id = cl.get_id();
 
         float x = 0, y = 0;
-        if (id % 2)
-        {
+        if (id % 2) {
             x = 100 * (1 + (id / 2));
             y = 100;
-        }
-        else
-        {
+        } else {
             x = conf::Map::width - 100 * (id / 2);
             y = conf::Map::height - 100;
         }
@@ -26,70 +21,56 @@ void World::create_players(std::list<ClientHandler> &clients)
         objects.emplace_back(new_pl);
 
     }
-    
-    auto enemy = new Enemy(500, 500, conf::Dir::RIGHT, 0);
-    enemies.emplace_back(enemy);
-    objects.emplace_back(enemy);
+
+    auto en = new Enemy(500, 500, conf::Dir::RIGHT, 0);
+    enemies.emplace_back(en);
+    objects.emplace_back(en);
 }
 
-bool World::upd_players_from_packs(std::list<ClientHandler> &clients)
-{
+bool World::upd_players_from_packs(std::list<ClientHandler> &clients) {
     if (clients.empty())
         return false;
 
-    for (auto& cl : clients)
-    {
+    for (auto &cl : clients) {
         players[cl.get_id()]->open_packet(cl.get_rcv_packet());
     }
     return true;
 }
 
-void World::update_objects(sf::Time time)
-{
-    for (auto it = objects.begin(); it != objects.end(); )
-    {
-        GameObject* obj = *it;
+void World::update_objects(sf::Time time) {
+    for (auto it = objects.begin(); it != objects.end();) {
+        GameObject *obj = *it;
 
         obj->update(time, objects);
 
-        if (obj->get_type() == conf::ObjectType::PLAYER)
-        {
-            auto player = dynamic_cast<Player*> (obj);
-            if (player->is_shoot())
-            {
+        if (obj->get_type() == conf::ObjectType::PLAYER) {
+            auto player = dynamic_cast<Player *> (obj);
+            if (player->is_shoot()) {
                 make_shoot(player);
             }
         }
-        if (!obj->get_active() && obj->get_type() == conf::ObjectType::BULLET)
-        {
-            auto bul = dynamic_cast<Bullet*> (obj);
+        if (!obj->get_active() && obj->get_type() == conf::ObjectType::BULLET) {
+            auto bul = dynamic_cast<Bullet *> (obj);
             it = objects.erase(it);
             disactive_bullets.emplace_back(bul);
-        }
-        else
+        } else
             it++;
     }
 }
 
-sf::Packet World::create_game_state()
-{
+sf::Packet World::create_game_state() {
     sf::Packet packet;
-    for (auto& obj : objects)
-    {
+    for (auto &obj : objects) {
         obj->compress_packet(packet);
     }
 
     return packet;
 }
 
-void World::delete_disconnected(std::list<ClientId> &disconnected)
-{
-    for (auto& id : disconnected)
-    {
-        for (auto it = objects.begin(); it != objects.end(); it++)
-        {
-            if (*it == players[id])
-            {
+void World::delete_disconnected(std::list<ClientId> &disconnected) {
+    for (auto &id : disconnected) {
+        for (auto it = objects.begin(); it != objects.end(); it++) {
+            if (*it == players[id]) {
                 delete players[id];
                 players.erase(id);
                 objects.erase(it);
@@ -99,8 +80,7 @@ void World::delete_disconnected(std::list<ClientId> &disconnected)
     }
 }
 
-void World::make_shoot(Player* player)
-{
+void World::make_shoot(Player *player) {
     auto bul = get_bullet(player->get_position(), player->get_direction(), player);
 
     objects.emplace_back(bul);
@@ -108,11 +88,9 @@ void World::make_shoot(Player* player)
     player->set_shoot_ready(false);
 }
 
-Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator)
-{
-    if (!disactive_bullets.empty())
-    {
-        Bullet* bul = disactive_bullets.back();
+Bullet *World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player *creator) {
+    if (!disactive_bullets.empty()) {
+        Bullet *bul = disactive_bullets.back();
         disactive_bullets.pop_back();
         bul->set_position(pos);
         bul->set_direction(dir_);
@@ -120,37 +98,26 @@ Bullet* World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator)
         bul->set_active(true);
 
         return bul;
-    }
-    else
+    } else
         return new Bullet(pos.x, pos.y, dir_, creator);
 }
 
-World::~World()
-{
-    for (auto obj : objects)
-    {
+World::~World() {
+    for (auto obj : objects) {
         delete obj;
     }
     objects.clear();
 
-    for (auto bul : disactive_bullets)
-    {
+    for (auto bul : disactive_bullets) {
         delete bul;
     }
     disactive_bullets.clear();
-    
-    for (auto enemy : enemies) 
-    {
-        delete enemy;
-    }
-    enemies.clear();
+
 }
 
-int World::disact_players_num()
-{
+int World::disact_players_num() {
     int count = 0;
-    for (auto pl : players)
-    {
+    for (auto pl : players) {
         if (!pl.second->get_active())
             count++;
     }

@@ -6,12 +6,13 @@ int main()
     XInitThreads();
     try
     {
+        /*
         std::cout << "Enter server ip: ";
         std::string str;
         std::cin >> str;
 
         sf::IpAddress server_ip(str);
-
+*/
         Client client(sf::IpAddress::LocalHost, Network::ServerPort);
         Game game;
 
