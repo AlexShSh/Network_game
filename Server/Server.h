@@ -12,9 +12,7 @@
 class Server
 {
 public:
-    Server();
-
-
+    explicit Server(int max_clients_ = net::MaxPlayersNum);
     void start();
     bool broadcast(sf::Packet& packet);
     void recive();
@@ -46,7 +44,6 @@ private:
 
     sf::Mutex mutex;
     bool active;
-
 
 
     void listen_connection();

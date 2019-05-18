@@ -31,7 +31,9 @@ enum PacketType
     ServerFull,
     SendID,
     NewConnect,
-    Reconnect
+    Reconnect,
+    Disconnect,
+    Data
 };
 
 }

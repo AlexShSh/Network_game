@@ -9,12 +9,12 @@
 class Client
 {
 public:
-    //Client(sf::IpAddress serv_ip, PortNumber serv_port);
     Client();
     bool find_server();
     bool connect();
     bool send(sf::Packet& packet);
     bool recieve(sf::Packet& packet);
+    void disconnect();
 
     //bool start(Game* game);
 

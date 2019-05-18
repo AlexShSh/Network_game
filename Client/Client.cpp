@@ -1,27 +1,8 @@
 #include "Client.h"
-/*
-Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
-    server_ip(serv_ip),
-    server_port(serv_port),
-    id(-1)
-{
-    auto status = socket.connect(server_ip, server_port);
-
-    if (status != sf::Socket::Done)
-    {
-        throw std::runtime_error("Can't connect to server");
-    }
-
-
-    local_port = socket.getLocalPort();
-}
-*/
 
 Client::Client() :
     id(net::NoID)
 {}
-
-
 
 bool Client::find_server()
 {
@@ -68,7 +49,10 @@ bool Client::find_server()
 
 bool Client::send(sf::Packet &packet)
 {
-    auto status = socket.send(packet);
+    sf::Packet send_packet;
+    send_packet << (sf::Int16) net::Data << packet;
+
+    auto status = socket.send(send_packet);
     if (status == sf::Socket::Done)
     {
         return true;
@@ -84,8 +68,8 @@ bool Client::send(sf::Packet &packet)
 
 bool Client::recieve(sf::Packet &packet)
 {
-    packet.clear();
-    auto status = socket.receive(packet);
+    sf::Packet rcv_pack;
+    auto status = socket.receive(rcv_pack);
 
     if (status == sf::Socket::Disconnected)
     {
@@ -94,6 +78,14 @@ bool Client::recieve(sf::Packet &packet)
     else if (status != sf::Socket::Done)
         std::cout << "Can't recive packet" << std::endl;
 
+    sf::Int16 type_tmp;
+    rcv_pack >> type_tmp;
+    auto type = (net::PacketType) type_tmp;
+    if (type == net::PacketType::Data)
+    {
+        packet.clear();
+        packet = rcv_pack;
+    }
     return true;
 }
 
@@ -232,4 +224,15 @@ bool Client::reconect()
     }
 
     return false;
+}
+
+void Client::disconnect()
+{
+    sf::Packet packet;
+    packet << (sf::Int16) net::Disconnect;
+
+    send(packet);
+
+    socket.disconnect();
+    return;
 }

@@ -1,8 +1,8 @@
 #include "Server.h"
 
-Server::Server() :
+Server::Server(int max_clients_) :
     ipAddress(sf::IpAddress::getLocalAddress()),
-    max_clients(net::MaxPlayersNum),
+    max_clients(max_clients_),
     cur_clients(0),
     last_id(0),
     listen_con_thread(&Server::listen_connection, this),
@@ -136,9 +136,29 @@ void Server::recive()
                 auto status = sock->receive(pack);
                 if (status == sf::Socket::Done)
                 {
-                    client->set_packet(pack);
-                    while (sock->receive(pack) == sf::Socket::Done)
-                        pack.clear();
+                    sf::Int16 type_tmp;
+                    pack >> type_tmp;
+                    auto type = (net::PacketType) type_tmp;
+
+                    if (type == net::PacketType::Data)
+                    {
+                        client->set_packet(pack);
+                        while (sock->receive(pack) == sf::Socket::Done)
+                            pack.clear();
+                    }
+                    else if (type == net::PacketType::Disconnect)
+                    {
+                        auto id = client->get_id();
+
+                        selector.remove(*sock);
+                        comp_disconnected.emplace_back(id);
+                        cur_clients--;
+                        delete clients[id];
+                        clients.erase(id);
+
+                        std::cout << "Client " << id << " was disconected\n";
+                    }
+
 
                 }
                 else if (status == sf::Socket::Disconnected)
@@ -185,10 +205,12 @@ bool Server::send_serv_full(sf::TcpSocket *socket)
 
 bool Server::broadcast(sf::Packet &packet)
 {
+    sf::Packet send_pack;
+    send_pack << (sf::Int16) net::PacketType::Data << packet;
     for (auto& cl : clients)
     {
         auto sock = cl.second->get_socket();
-        auto status = sock->send(packet);
+        auto status = sock->send(send_pack);
 
         while (status == sf::Socket::Partial)
             status = sock->send(packet);
@@ -352,6 +374,7 @@ void Server::check_temp_disconnected()
             selector.remove(*sock);
             comp_disconnected.emplace_back(id);
             cur_clients--;
+            delete clients[id];
             clients.erase(id);
             it = temp_disconnected.erase(it);
 
