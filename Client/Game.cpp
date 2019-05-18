@@ -114,6 +114,7 @@ void Game::keyboard_reader()
     {
         if (window_focused)
         {
+            mutex.lock();
             conf::Dir dir = keyboard.get_direction();
             bool is_shoot = keyboard.get_shoot();
 
@@ -122,17 +123,19 @@ void Game::keyboard_reader()
             {
                 packet << (sf::Int16) dir << (sf::Int16) is_shoot;
             }
+            mutex.unlock();
 
             sf::sleep(sf::milliseconds(20));
         }
-
     }
 }
 
 sf::Packet Game::get_packet()
 {
+    mutex.lock();
     sf::Packet copy = packet;
     packet.clear();
+    mutex.unlock();
 
     return copy;
 }

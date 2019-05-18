@@ -46,5 +46,6 @@ private:
     sf::Texture map;
     GraphObject Map;
 
+    sf::Mutex mutex;
 
 };

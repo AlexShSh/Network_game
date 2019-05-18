@@ -1,13 +1,10 @@
 #include "Client.h"
-
-
+/*
 Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
     server_ip(serv_ip),
     server_port(serv_port),
     id(-1)
 {
-    local_ip = sf::IpAddress::getLocalAddress();
-
     auto status = socket.connect(server_ip, server_port);
 
     if (status != sf::Socket::Done)
@@ -17,6 +14,55 @@ Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
 
 
     local_port = socket.getLocalPort();
+}
+*/
+
+Client::Client()
+{}
+
+
+
+bool Client::find_server()
+{
+    con_socket.setBlocking(false);
+    con_socket.bind(sf::Socket::AnyPort);
+
+    sf::Packet packet;
+    packet << (sf::Int16) net::PacketType::ConRequest;
+
+    for (int i = 0; i < net::ConnectAttempt; i++)
+    {
+        auto status = con_socket.send(packet, sf::IpAddress::Broadcast, net::ServerConnectPort);
+        if (status != sf::Socket::Done)
+        {
+            continue;
+        }
+        sf::Clock timer;
+        while (timer.getElapsedTime().asMilliseconds() < net::ConnectionTimeout)
+        {
+            sf::Packet rcv_pack;
+            sf::IpAddress remote_ip;
+            PortNumber remote_port;
+            status = con_socket.receive(rcv_pack, remote_ip, remote_port);
+
+            if (status != sf::Socket::Done)
+                continue;
+
+            sf::Int16 type_tmp;
+            if (!(rcv_pack >> type_tmp))
+                continue;
+
+            auto type = (net::PacketType) type_tmp;
+            if (type == net::PacketType::ConConfirm)
+            {
+                server_ip = remote_ip;
+                std::cout << "Get confirm from " << remote_ip << ":" << remote_port << std::endl;
+                return true;
+            }
+        }
+    }
+    std::cout << "Time is out, server wasn't found" << std::endl;
+    return false;
 }
 
 bool Client::send(sf::Packet &packet)
@@ -55,22 +101,38 @@ bool Client::recive_id()
         return false;
     }
 
-    if (!(packet >> id))
+    sf::Int16 type_tmp;
+    if (!(packet >> type_tmp))
     {
-        std::cout << "Unexpected packet" << std::endl;
+        std::cout << "Unknown packet" << std::endl;
         return false;
     }
 
-    std::cout << "ID: " << id << std::endl;
-
-    return true;
+    auto type = (net::PacketType) type_tmp;
+    if (type == net::PacketType::SendID)
+    {
+        packet >> id;
+        std::cout << "ID: " << id << std::endl;
+        return true;
+    }
+    else if (type == net::PacketType::ServerFull)
+    {
+        std::cout << "Server is full" << std::endl;
+        return false;
+    }
+    else
+    {
+        std::cout << "Unknown type of packet" << std::endl;
+        return false;
+    }
 }
-
+/*
 void keyboard_reader(Game* game)
 {
     game->keyboard_reader();
 }
-
+ */
+/*
 bool Client::start(Game* game)
 {
     if (!recive_id())
@@ -100,8 +162,22 @@ bool Client::start(Game* game)
     game->set_active(false);
     return true;
 }
+*/
 
 Client::~Client()
 {
     std::cout << "Client was destroyed" << std::endl;
+}
+
+bool Client::connect()
+{
+    auto status = socket.connect(server_ip, net::ServerPort, sf::milliseconds(net::Timeout));
+
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Can't connect to server" << std::endl;
+        return false;
+    }
+
+    return recive_id();
 }

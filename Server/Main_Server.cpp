@@ -1,5 +1,5 @@
 #include "Server.h"
-
+/*
 int main()
 {
     Server server;
@@ -16,4 +16,27 @@ int main()
     }
 
     return 0;
+}
+
+ */
+
+
+void command_line_reader(Server* serv)
+{
+    while (serv->is_active())
+    {
+        std::string str;
+        std::getline(std::cin, str);
+        if (str == "q")
+        {
+            serv->set_active(false);
+        }
+    }
+}
+
+int main()
+{
+    Server server;
+
+    server.connect_clients();
 }
