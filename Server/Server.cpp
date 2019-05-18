@@ -29,6 +29,8 @@ void Server::connect_clients()
 
 bool Server::add_client()
 {
+    std::cout << "new client want to connect\n";
+
     auto new_socket = new sf::TcpSocket;
     new_socket->setBlocking(false);
 
@@ -36,28 +38,82 @@ bool Server::add_client()
     {
         selector.add(*new_socket);
 
-        if (cur_clients == max_clients)
+        sf::Packet packet;
+        sf::Clock timer;
+        sf::Socket::Status status = {};
+
+        while (timer.getElapsedTime().asMilliseconds() < net::Timeout)
         {
-            send_serv_full(new_socket);
-            new_socket->disconnect();
+            status = new_socket->receive(packet);
+            if (status == sf::Socket::Done)
+                break;
+        }
+
+        if (status != sf::Socket::Done)
+        {
             selector.remove(*new_socket);
+            new_socket->disconnect();
             delete new_socket;
             return false;
         }
 
-        ClientId id = get_id();
-        if (!send_id(new_socket, id))
-        {
-            new_socket->disconnect();
-            selector.remove(*new_socket);
-            delete new_socket;
-            return false;
-        }
-        clients.emplace_back(new_socket, id);
-        cur_clients++;
+        sf::Int16 type_tmp;
+        packet >> type_tmp;
+        auto type = (net::PacketType) type_tmp;
 
-        std::cout << "New player connected, current player's number: " << cur_clients << std::endl;
-        return true;
+        if (type == net::PacketType::NewConnect)
+        {
+            if (cur_clients == max_clients)
+            {
+                send_serv_full(new_socket);
+                selector.remove(*new_socket);
+                new_socket->disconnect();
+                delete new_socket;
+                return false;
+            }
+
+            ClientId id = get_id();
+            if (!send_id(new_socket, id))
+            {
+                selector.remove(*new_socket);
+                new_socket->disconnect();
+                delete new_socket;
+                return false;
+            }
+
+            sf::Lock lock(mutex);
+            auto  handler = new ClientHandler(new_socket, id);
+            clients.emplace(id, handler);
+            cur_clients++;
+
+            std::cout << "New client connected, current client's number: " << cur_clients << std::endl;
+            return true;
+        }
+        else if (type == net::PacketType::Reconnect)
+        {
+            ClientId id;
+            packet >> id;
+
+            sf::Lock lock(mutex);
+
+            if (clients.count(id) == 0 || temp_disconnected.count(id) == 0)
+            {
+                selector.remove(*new_socket);
+                new_socket->disconnect();
+                delete new_socket;
+                return false;
+            }
+
+            ClientHandler* cl = clients[id];
+            cl->change_socket(new_socket);
+            temp_disconnected.erase(id);
+
+            std::cout << "Client " << id << " reconnected" << std::endl;
+            return true;
+        }
+
+        selector.remove(*new_socket);
+        new_socket->disconnect();
     }
 
     delete new_socket;
@@ -66,12 +122,13 @@ bool Server::add_client()
 
 void Server::recive()
 {
-    if (selector.wait(sf::Time::Zero))
+    if (selector.wait(sf::milliseconds(net::Timeout)))
     {
-        for (auto it = clients.begin(); it != clients.end();)
+        sf::Lock lock(mutex);
+        for (auto el : clients)
         {
-            ClientHandler& client = *it;
-            auto sock = client.get_socket();
+            auto client = el.second;
+            auto sock = client->get_socket();
 
             if (selector.isReady(*sock))
             {
@@ -79,29 +136,19 @@ void Server::recive()
                 auto status = sock->receive(pack);
                 if (status == sf::Socket::Done)
                 {
-                    client.set_packet(pack);
+                    client->set_packet(pack);
                     while (sock->receive(pack) == sf::Socket::Done)
                         pack.clear();
 
-                    it++;
                 }
-                else if (status == sf::Socket::Disconnected ||
-                         status == sf::Socket::Error)
+                else if (status == sf::Socket::Disconnected)
                 {
-                    selector.remove(*sock);
-                    disconnected.emplace_back(client.get_id());
-                    cur_clients--;
-                    it = clients.erase(it);
-
-                    std::cout << "Client was disconected\n";
+                    temp_disconnected.emplace(client->get_id(), sf::Clock());
                 }
-            }
-            else
-            {
-                it++;
             }
         }
     }
+    check_temp_disconnected();
 }
 
 ClientId Server::get_id()
@@ -114,6 +161,7 @@ bool Server::send_id(sf::TcpSocket *socket, ClientId id)
 {
     sf::Packet id_pack;
     id_pack << (sf::Int16) net::PacketType::SendID << id;
+
     if (socket->send(id_pack) != sf::Socket::Done)
     {
         std::cout << "Couldn't send id" << std::endl;
@@ -139,7 +187,7 @@ bool Server::broadcast(sf::Packet &packet)
 {
     for (auto& cl : clients)
     {
-        auto sock = cl.get_socket();
+        auto sock = cl.second->get_socket();
         auto status = sock->send(packet);
 
         while (status == sf::Socket::Partial)
@@ -181,18 +229,18 @@ bool Server::start(World *world)
             world->update_objects(timer.restart());
 
             sf::Packet pack = world->create_game_state();
-            if (!disconnected.empty())
+            if (!comp_disconnected.empty())
             {
                 add_disconnected_packet(pack);
-                disconnected.clear();
+                comp_disconnected.clear();
             }
 
             broadcast(pack);
 
             recive();
-            if (!disconnected.empty())
+            if (!comp_disconnected.empty())
             {
-                world->delete_disconnected(disconnected);
+                world->delete_disconnected(comp_disconnected);
             }
             if (world->disact_players_num() >= clients.size() - 1 && clients.size() != 1)
             {
@@ -207,7 +255,7 @@ bool Server::start(World *world)
 
 void Server::add_disconnected_packet(sf::Packet &packet)
 {
-    for (auto cl : disconnected)
+    for (auto cl : comp_disconnected)
     {
         packet << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f << (sf::Int16) conf::Dir::NONE << -1.f;
     }
@@ -255,7 +303,6 @@ void Server::listen_connection()
             }
         }
     }
-    return;
 }
 
 bool Server::is_active()
@@ -289,6 +336,30 @@ void Server::start()
     listen_con_thread.launch();
     connect_clients_thread.launch();
     cmd_line_thread.launch();
+}
 
+void Server::check_temp_disconnected()
+{
+    for (auto it = temp_disconnected.begin(); it != temp_disconnected.end();)
+    {
+        auto cl = *it;
+        if (cl.second.getElapsedTime().asMilliseconds() >= net::ReconnectTimeout)
+        {
+            auto hd = clients[cl.first];
+            auto sock = hd->get_socket();
+            auto id = cl.first;
 
+            selector.remove(*sock);
+            comp_disconnected.emplace_back(id);
+            cur_clients--;
+            clients.erase(id);
+            it = temp_disconnected.erase(it);
+
+            std::cout << "Client " << id << " was disconected\n";
+        }
+        else
+        {
+            it++;
+        }
+    }
 }

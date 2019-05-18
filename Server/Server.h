@@ -3,7 +3,7 @@
 #include <SFML/Network.hpp>
 #include <iostream>
 #include <list>
-#include <vector>
+#include <map>
 
 #include "../Shared/NetworkDefinitions.h"
 #include "World.h"
@@ -16,8 +16,9 @@ public:
 
 
     void start();
+    bool broadcast(sf::Packet& packet);
+    void recive();
     //bool start(World* world);
-    //void start_listen_connection();
 
     bool is_active();
 
@@ -33,8 +34,9 @@ private:
     sf::Int32 max_clients;
     sf::Int32 cur_clients;
 
-    std::list<ClientHandler> clients;
-    std::list<ClientId> disconnected;
+    std::map<ClientId, ClientHandler*> clients;
+    std::map<ClientId, sf::Clock> temp_disconnected;
+    std::list<ClientId> comp_disconnected;
 
     ClientId last_id;
 
@@ -46,15 +48,15 @@ private:
     bool active;
 
 
-    void recive();
+
     void listen_connection();
     void cmd_line_read();
     bool add_client();
     bool send_id(sf::TcpSocket* socket, ClientId id);
     bool send_serv_full(sf::TcpSocket* socket);
-    bool broadcast(sf::Packet& packet);
-    ClientId get_id();
     void add_disconnected_packet(sf::Packet& packet);
     void set_active(bool atc);
     void connect_clients();
+    void check_temp_disconnected();
+    ClientId get_id();
 };

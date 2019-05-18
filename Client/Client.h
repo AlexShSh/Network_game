@@ -15,7 +15,6 @@ public:
     bool connect();
     bool send(sf::Packet& packet);
     bool recieve(sf::Packet& packet);
-    bool recive_id();
 
     //bool start(Game* game);
 
@@ -28,4 +27,7 @@ private:
     sf::IpAddress server_ip;
 
     ClientId id;
+
+    bool recive_id();
+    bool reconect();
 };

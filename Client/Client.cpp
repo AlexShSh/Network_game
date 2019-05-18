@@ -17,7 +17,8 @@ Client::Client(sf::IpAddress serv_ip, PortNumber serv_port) :
 }
 */
 
-Client::Client()
+Client::Client() :
+    id(net::NoID)
 {}
 
 
@@ -67,13 +68,18 @@ bool Client::find_server()
 
 bool Client::send(sf::Packet &packet)
 {
-    if (socket.send(packet) != sf::Socket::Done)
+    auto status = socket.send(packet);
+    if (status == sf::Socket::Done)
     {
-        std::cout << "Can't send packet" << std::endl;
-        return false;
+        return true;
+    } 
+    else if (status == sf::Socket::Disconnected)
+    {
+        return reconect();
     }
-
-    return true;
+    
+    std::cout << "Can't send packet" << std::endl;
+    return false;
 }
 
 bool Client::recieve(sf::Packet &packet)
@@ -83,8 +89,7 @@ bool Client::recieve(sf::Packet &packet)
 
     if (status == sf::Socket::Disconnected)
     {
-        std::cout << "Server was disconected" << std::endl;
-        return false;
+        return reconect();
     }
     else if (status != sf::Socket::Done)
         std::cout << "Can't recive packet" << std::endl;
@@ -94,11 +99,17 @@ bool Client::recieve(sf::Packet &packet)
 
 bool Client::recive_id()
 {
+    socket.setBlocking(false);
     sf::Packet packet;
-    if (socket.receive(packet) != sf::Socket::Done)
+    sf::Clock timer;
+
+    while (socket.receive(packet) != sf::Socket::Done)
     {
-        std::cout << "Can't recieve id" << std::endl;
-        return false;
+        if (timer.getElapsedTime().asMilliseconds() >= net::Timeout)
+        {
+            std::cout << "Can't recieve id" << std::endl;
+            return false;
+        }
     }
 
     sf::Int16 type_tmp;
@@ -171,6 +182,7 @@ Client::~Client()
 
 bool Client::connect()
 {
+    socket.setBlocking(true);
     auto status = socket.connect(server_ip, net::ServerPort, sf::milliseconds(net::Timeout));
 
     if (status != sf::Socket::Done)
@@ -179,5 +191,45 @@ bool Client::connect()
         return false;
     }
 
+    sf::Packet packet;
+    packet << (sf::Int16) net::PacketType::NewConnect;
+
+    auto stat = socket.send(packet);
+    if (stat != sf::Socket::Done)
+    {
+        std::cout << "Can't send 'New connect' packet" << std::endl;
+        return false;
+    }
+
     return recive_id();
+}
+
+bool Client::reconect()
+{
+    for (int i = 0; i < net::ReconnectAttemp; ++i)
+    {
+        sf::sleep(sf::milliseconds(net::ReconnectDelay));
+
+        socket.setBlocking(true);
+        auto status = socket.connect(server_ip, net::ServerPort, sf::milliseconds(net::Timeout));
+
+        if (status != sf::Socket::Done)
+        {
+            std::cout << "Can't connect to server" << std::endl;
+            continue;
+        }
+
+        sf::Packet packet;
+        packet << (sf::Int16) net::PacketType::Reconnect << id;
+
+        auto stat = socket.send(packet);
+        if (stat != sf::Socket::Done)
+        {
+            std::cout << "Can't send 'Reconnect' packet" << std::endl;
+            continue;
+        }
+        return true;
+    }
+
+    return false;
 }

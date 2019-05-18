@@ -34,4 +34,8 @@ int main()
         return -1;
 
     client.connect();
+
+    while (true);
+
+    return 0;
 }
