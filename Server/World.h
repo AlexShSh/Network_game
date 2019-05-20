@@ -22,6 +22,7 @@ public:
     sf::Packet create_game_state();
     void delete_disconnected(std::list<ClientId>& disconnected);
     void make_shoot(Player* player);
+    void generator(sf::Time time);
     int disact_players_num();
 
 private:
@@ -29,6 +30,8 @@ private:
     std::list<GameObject*> objects;
     std::list<Bullet*> disactive_bullets;
     std::list<Enemy*> enemies;
+    int wave;
+    int counter;
     
     Bullet* get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator);
 };

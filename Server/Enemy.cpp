@@ -2,6 +2,8 @@
 #include "Enemy.h"
 #include "Bullet.h"
 
+#define kwadrat 6
+
 Enemy::Enemy(float x, float y, conf::Dir dir, int number) :
         GameObject(x, y, dir, conf::Enemy::animation_speed, conf::Enemy::frame_amount,
                    conf::Enemy::speed, conf::ObjectType::ENEMY),
@@ -143,20 +145,20 @@ conf::Dir Enemy::get_direction(std::list<GameObject *> &objects)
         }
     }
 
-    if((position.x - player_position.x) > 32)
+    if((position.x - player_position.x) > kwadrat)
     {
-        if((position.y - player_position.y) > 32)
+        if((position.y - player_position.y) > kwadrat)
             return conf::Dir::UP_LEFT;
-        else if((position.y - player_position.y) < -32)
+        else if((position.y - player_position.y) < -kwadrat)
             return conf::Dir::DOWN_LEFT;
         else
             return conf::Dir::LEFT;
     }
-    else if((position.x - player_position.x) < -32)
+    else if((position.x - player_position.x) < -kwadrat)
     {
-        if((position.y - player_position.y) > 32)
+        if((position.y - player_position.y) > kwadrat)
             return conf::Dir::UP_RIGHT;
-        else if((position.y - player_position.y) < -32)
+        else if((position.y - player_position.y) < -kwadrat)
             return conf::Dir::DOWN_RIGHT;
         else
             return conf::Dir::RIGHT;

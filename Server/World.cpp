@@ -21,10 +21,7 @@ void World::create_players(std::list<ClientHandler> &clients) {
         objects.emplace_back(new_pl);
 
     }
-
-    auto en = new Enemy(500, 500, conf::Dir::RIGHT, 0);
-    enemies.emplace_back(en);
-    objects.emplace_back(en);
+    wave = 0;
 }
 
 bool World::upd_players_from_packs(std::list<ClientHandler> &clients) {
@@ -37,7 +34,8 @@ bool World::upd_players_from_packs(std::list<ClientHandler> &clients) {
     return true;
 }
 
-void World::update_objects(sf::Time time) {
+void World::update_objects(sf::Time time)
+{
     for (auto it = objects.begin(); it != objects.end();) {
         GameObject *obj = *it;
 
@@ -127,4 +125,27 @@ int World::disact_players_num() {
             count++;
     }
     return count;
+}
+
+void World::generator(sf::Time time)
+{
+
+    if(time.asSeconds()/30 > wave)
+    {
+        wave++;
+        counter = 0;
+    }
+
+    if(counter != wave * 5 && (time.asSeconds() - 30 * (wave - 1)) > 2 * counter)
+    {
+        auto en = new Enemy(500, 500, conf::Dir::RIGHT, counter++);
+        enemies.emplace_back(en);
+        objects.emplace_back(en);
+        if(wave > 5)
+        {
+            auto en1 = new Enemy(1000, 500, conf::Dir::RIGHT, counter++);
+            enemies.emplace_back(en1);
+            objects.emplace_back(en1);
+        }
+    }
 }

@@ -2,7 +2,8 @@
 
 Game::Game() :
     is_active(false),
-    window_focused(false)
+    window_focused(false),
+    enemies(100, nullptr)
 {}
 
 void Game::update_objects(sf::Packet& packet)
@@ -88,18 +89,21 @@ void Game::update_ememy(sf::Packet &packet)
 
     if (dir == conf::Dir::NONE)
     {
-        enemies.erase(enemies.begin() + number);
+        auto en = enemies[number];
+        delete en;
+        enemies[number] = nullptr;
         return;
     }
 
-    if (number + 1 >  enemies.size())
+    if (enemies[number] == nullptr)
     {
-        enemies.emplace_back(GraphObject(&enemy, conf::Enemy::sprite_width, conf::Enemy::sprite_height,
-                                        250, 250, conf::Dir::LEFT));
+        auto elem = new GraphObject(&enemy, conf::Enemy::sprite_width, conf::Enemy::sprite_height,
+                                    250, 250, conf::Dir::LEFT);
+        enemies[number] = elem;
     }
 
-    enemies[number].frame_pos(dir, current_frame);
-    enemies[number].set_position(x, y, dir);
+    enemies[number]->frame_pos(dir, current_frame);
+    enemies[number]->set_position(x, y, dir);
 }
 
 void Game::update_bullet(sf::Packet& packet, int counter)
@@ -180,8 +184,11 @@ void Game::render()
     for(auto& text : hp)
         window->draw(text);
 
-    for(auto& en : enemies)
-        en.draw(window);
+    for(auto en : enemies)
+    {
+        if(en != nullptr)
+            en->draw(window);
+    }
 
     window->display();
 }

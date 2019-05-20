@@ -57,13 +57,13 @@ namespace Bullet
 namespace Enemy
 {
     const char filename[] = "images/Devil1.png";
-    const float speed = 0.2;
+    const float speed = 0.1;
     const float animation_speed = 0.02;
     const int frame_amount = 8;
     const int sprite_width = 64;
     const int sprite_height = 64;
-    const int obj_width = 40;
-    const int obj_height = 55;
+    const int obj_width = 25;
+    const int obj_height = 25;
     const int health = 1;
 }
 

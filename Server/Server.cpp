@@ -148,6 +148,7 @@ bool Server::start(World *world)
 {
     world->create_players(clients);
 
+    sf::Clock begin_timer;
     sf::Clock timer;
     int restart_counter = 0;
 
@@ -160,6 +161,7 @@ bool Server::start(World *world)
                 return false;
             }
 
+            world->generator(begin_timer.getElapsedTime());
             world->update_objects(timer.restart());
 
             sf::Packet pack = world->create_game_state();
