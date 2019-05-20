@@ -64,7 +64,7 @@ namespace Enemy
     const int sprite_height = 64;
     const int obj_width = 40;
     const int obj_height = 55;
-    const int health = 5;
+    const int health = 1;
 }
 
 

@@ -49,6 +49,11 @@ void World::update_objects(sf::Time time) {
                 make_shoot(player);
             }
         }
+        if(obj->get_type() == conf::ObjectType::ENEMY && !obj->get_active())
+        {
+            it = objects.erase(it);
+            continue;
+        }
         if (!obj->get_active() && obj->get_type() == conf::ObjectType::BULLET) {
             auto bul = dynamic_cast<Bullet *> (obj);
             it = objects.erase(it);
