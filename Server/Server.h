@@ -12,12 +12,13 @@
 class Server
 {
 public:
-    explicit Server(int max_clients_ = net::MaxPlayersNum);
+    explicit Server(int max_clients_ = net::MaxClientsNum);
     void start();
     bool broadcast(sf::Packet& packet);
     void recive();
     //bool start(World* world);
-
+    std::list<ClientId> get_new_clients();
+    std::list<ClientId> get_disconnected_clients();
     bool is_active();
 
     ~Server();
@@ -34,6 +35,7 @@ private:
 
     std::map<ClientId, ClientHandler*> clients;
     std::map<ClientId, sf::Clock> temp_disconnected;
+    std::list<ClientId > new_clients;
     std::list<ClientId> comp_disconnected;
 
     ClientId last_id;
@@ -51,7 +53,7 @@ private:
     bool add_client();
     bool send_id(sf::TcpSocket* socket, ClientId id);
     bool send_serv_full(sf::TcpSocket* socket);
-    void add_disconnected_packet(sf::Packet& packet);
+    //void add_disconnected_packet(sf::Packet& packet);
     void set_active(bool atc);
     void connect_clients();
     void check_temp_disconnected();

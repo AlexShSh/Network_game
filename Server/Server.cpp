@@ -85,6 +85,7 @@ bool Server::add_client()
             auto  handler = new ClientHandler(new_socket, id);
             clients.emplace(id, handler);
             cur_clients++;
+            new_clients.emplace_back(id);
 
             std::cout << "New client connected, current client's number: " << cur_clients << std::endl;
             return true;
@@ -274,14 +275,14 @@ bool Server::start(World *world)
     }
 }
 */
-
+/*
 void Server::add_disconnected_packet(sf::Packet &packet)
 {
     for (auto cl : comp_disconnected)
     {
         packet << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f << (sf::Int16) conf::Dir::NONE << -1.f;
     }
-}
+}*/
 
 
 void Server::listen_connection()
@@ -300,7 +301,7 @@ void Server::listen_connection()
     while (is_active())
     {
         sf::IpAddress remote_ip;
-        PortNumber remote_port;
+        PortNumber remote_port = 0;
         sf::Packet rcv_pack;
 
         status = sf::Socket::Disconnected;
@@ -385,4 +386,18 @@ void Server::check_temp_disconnected()
             it++;
         }
     }
+}
+
+std::list<ClientId> Server::get_new_clients()
+{
+    auto cpy = new_clients;
+    new_clients.clear();
+    return cpy;
+}
+
+std::list<ClientId> Server::get_disconnected_clients()
+{
+    auto cpy = comp_disconnected;
+    comp_disconnected.clear();
+    return cpy;
 }

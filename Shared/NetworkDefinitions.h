@@ -21,7 +21,7 @@ enum
     Timeout = 50,
     RestartWaiting = 100,
     NoID = 0,
-    MaxPlayersNum = 1
+    MaxClientsNum = 1
 };
 
 enum PacketType

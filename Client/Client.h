@@ -15,7 +15,6 @@ public:
     bool send(sf::Packet& packet);
     bool recieve(sf::Packet& packet);
     void disconnect();
-
     //bool start(Game* game);
 
     ~Client();
