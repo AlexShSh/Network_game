@@ -22,7 +22,7 @@ int Enemy::get_number() const
     return number;
 }
 
-void Enemy::interract(std::list<GameObject *>& objects)
+void Enemy::interract(std::list<GameObject *>& objects, sf::Time time)
 {
     for (auto obj : objects)
     {
@@ -38,6 +38,13 @@ void Enemy::interract(std::list<GameObject *>& objects)
             case conf::ObjectType::PLAYER:
             {
                 can_move = false;
+                if(!check_border())
+                    break;
+                /*
+                position += {compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds(),
+                             compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds()};
+                             */
+                obj->get_damage(1);
                 break;
             }
             case conf::ObjectType::BULLET:
@@ -45,12 +52,16 @@ void Enemy::interract(std::list<GameObject *>& objects)
                 auto bul = dynamic_cast<Bullet*>(obj);
 
                 bul->set_active(false);
-                get_damage();
+                get_damage(1);
                 break;
             }
             case conf::ObjectType::ENEMY:
             {
                 can_move = false;
+                if(!check_border())
+                    break;
+                position += {compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds(),
+                             compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds()};
                 break;
             }
             default:
@@ -59,9 +70,9 @@ void Enemy::interract(std::list<GameObject *>& objects)
     }
 }
 
-void Enemy::get_damage()
+void Enemy::get_damage(int size)
 {
-    health--;
+    health -= size;
 }
 
 void Enemy::update(sf::Time time, std::list<GameObject*>& objects)
@@ -83,7 +94,7 @@ void Enemy::update(sf::Time time, std::list<GameObject*>& objects)
 
         position += shift;
         collider.set_position(position);
-        interract(objects);
+        interract(objects, time);
 
         if(!check_border())
             can_move = false;
@@ -101,7 +112,7 @@ void Enemy::update(sf::Time time, std::list<GameObject*>& objects)
     }
     else
     {
-        interract(objects);
+        interract(objects, time);
     }
 
     if (health <= 0)

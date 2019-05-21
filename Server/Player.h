@@ -16,7 +16,7 @@ public:
     ClientId get_id() const;
     void set_shoot_ready(bool st);
 
-    void get_damage();
+    void get_damage(int size) override;
 
 private:
     int health;
@@ -27,5 +27,5 @@ private:
     sf::Time time_after_shoot;
     bool can_move;
 
-    void interract(std::list<GameObject *>& objects) override;
+    void interract(std::list<GameObject *>& objects, sf::Time time) override;
 };

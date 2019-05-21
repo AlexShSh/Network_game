@@ -22,6 +22,7 @@ public:
 
     virtual void update(sf::Time time, std::list<GameObject*>& objects) = 0;
     virtual void compress_packet(sf::Packet& packet) = 0;
+    virtual void get_damage(int size);
 
     sf::Vector2f get_position() const;
     conf::Dir get_direction() const;
@@ -29,8 +30,12 @@ public:
     conf::ObjectType get_type() const;
     int get_current_frame() const;
     bool get_active() const;
+
+
     const RectangleCollider& get_collider() const;
     float distance(sf::Vector2f pos);
+    float fast_square_root(float n);
+    sf::Vector2f compute_unit_vector(const sf::Vector2f &first, const sf::Vector2f &second);
 
     sf::Vector2f get_shift(conf::Dir dir, float tm);
 
@@ -50,6 +55,6 @@ protected:
 
     bool is_active;
 
-    virtual void interract(std::list<GameObject*>& objects) = 0;
+    virtual void interract(std::list<GameObject*>& objects, sf::Time time) = 0;
     bool check_border() const;
 };

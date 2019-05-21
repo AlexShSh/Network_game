@@ -130,17 +130,18 @@ int World::disact_players_num() {
 void World::generator(sf::Time time)
 {
 
-    if(time.asSeconds()/30 > wave)
+    if(time.asSeconds()/20 > wave)
     {
         wave++;
         counter = 0;
     }
 
-    if(counter != wave * 5 && (time.asSeconds() - 30 * (wave - 1)) > 2 * counter)
+    if(counter != wave * 3 && (time.asSeconds() - 20 * (wave - 1)) > (int)(4 / wave + 1)  * counter)
     {
         auto en = new Enemy(500, 500, conf::Dir::RIGHT, counter++);
         enemies.emplace_back(en);
         objects.emplace_back(en);
+
         if(wave > 5)
         {
             auto en1 = new Enemy(1000, 500, conf::Dir::RIGHT, counter++);

@@ -25,11 +25,13 @@ public:
     void generator(sf::Time time);
     int disact_players_num();
 
+
 private:
     std::map<ClientId, Player*>  players;
     std::list<GameObject*> objects;
     std::list<Bullet*> disactive_bullets;
     std::list<Enemy*> enemies;
+
     int wave;
     int counter;
     

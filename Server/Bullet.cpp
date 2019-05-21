@@ -39,7 +39,7 @@ void Bullet::compress_packet(sf::Packet &packet)
 
 }
 
-void Bullet::interract(std::list<GameObject *> &objects)
+void Bullet::interract(std::list<GameObject *> &objects, sf::Time time)
 {
     for (auto obj : objects)
     {

@@ -2,14 +2,13 @@
 
 Game::Game() :
     is_active(false),
-    window_focused(false),
-    enemies(100, nullptr)
+    window_focused(false)
 {}
 
 void Game::update_objects(sf::Packet& packet)
 {
     sf::Int16 type_tmp;
-    int counter = 0;
+    int counter_bull = 0, counter_dev = 0;
 
     while (packet >> type_tmp)
     {
@@ -21,19 +20,27 @@ void Game::update_objects(sf::Packet& packet)
 
         else if(type == conf::ObjectType::BULLET)
         {
-            if(counter == bullets.size())
+            if(counter_bull == bullets.size())
                 bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
                         conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::Dir::LEFT));
-            update_bullet(packet, counter++);
+            update_bullet(packet, counter_bull++);
         }
         else if(type == conf::ObjectType::ENEMY)
-            update_ememy(packet);
+        {
+            if(counter_dev == enemies.size())
+                enemies.emplace_back(GraphObject(&enemy, conf::Enemy::sprite_width, conf::Enemy::sprite_height,
+                        conf::Enemy::default_pos_x, conf::Enemy::default_pos_y, conf::Dir::LEFT));
+            update_ememy(packet, counter_dev++);
+        }
         else
             continue;
     }
 
-    while(counter < bullets.size())
-        bullets[counter++].set_position(conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::LEFT);
+    while(counter_bull < bullets.size())
+        bullets[counter_bull++].set_position(conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::LEFT);
+
+    while(counter_dev < enemies.size())
+        enemies[counter_dev++].set_position(conf::Enemy::default_pos_x, conf::Enemy::default_pos_y, conf::LEFT);
 }
 
 
@@ -76,7 +83,7 @@ void Game::update_player(sf::Packet& packet)
     player_hp.str(std::string());
 }
 
-void Game::update_ememy(sf::Packet &packet)
+void Game::update_ememy(sf::Packet &packet, int counter)
 {
     float x, y;
     int current_frame;
@@ -87,23 +94,8 @@ void Game::update_ememy(sf::Packet &packet)
 
     auto dir = (conf::Dir) dir_tmp;
 
-    if (dir == conf::Dir::NONE)
-    {
-        auto en = enemies[number];
-        delete en;
-        enemies[number] = nullptr;
-        return;
-    }
-
-    if (enemies[number] == nullptr)
-    {
-        auto elem = new GraphObject(&enemy, conf::Enemy::sprite_width, conf::Enemy::sprite_height,
-                                    250, 250, conf::Dir::LEFT);
-        enemies[number] = elem;
-    }
-
-    enemies[number]->frame_pos(dir, current_frame);
-    enemies[number]->set_position(x, y, dir);
+    enemies[counter].frame_pos(dir, current_frame);
+    enemies[counter].set_position(x, y, dir);
 }
 
 void Game::update_bullet(sf::Packet& packet, int counter)
@@ -184,10 +176,9 @@ void Game::render()
     for(auto& text : hp)
         window->draw(text);
 
-    for(auto en : enemies)
+    for(auto& en : enemies)
     {
-        if(en != nullptr)
-            en->draw(window);
+        en.draw(window);
     }
 
     window->display();

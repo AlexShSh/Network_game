@@ -15,7 +15,7 @@ public:
 
     int get_number() const;
 
-    void get_damage();
+    void get_damage(int size) override;
 
 private:
     int number;
@@ -24,5 +24,5 @@ private:
     bool can_move;
     bool death;
 
-    void interract(std::list<GameObject *>& objects) override;
+    void interract(std::list<GameObject *>& objects, sf::Time time) override;
 };

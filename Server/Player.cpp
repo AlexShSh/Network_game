@@ -50,7 +50,7 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
 
         position += shift;
         collider.set_position(position);
-        interract(objects);
+        interract(objects, time);
 
         if(!check_border())
             can_move = false;
@@ -59,6 +59,7 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
         {
             position -= shift;
             can_move = true;
+            animate(tm);
         } else
         {
             animate(tm);
@@ -68,7 +69,7 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
     }
     else
     {
-        interract(objects);
+        interract(objects, time);
     }
 
     if (health <= 0)
@@ -110,7 +111,7 @@ ClientId Player::get_id() const
 }
 
 
-void Player::interract(std::list<GameObject *>& objects)
+void Player::interract(std::list<GameObject *>& objects, sf::Time time)
 {
     for (auto obj : objects)
     {
@@ -126,12 +127,18 @@ void Player::interract(std::list<GameObject *>& objects)
             case conf::ObjectType::PLAYER:
             {
                 can_move = false;
+                position += {compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds(),
+                        compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds()};
                 break;
             }
 
             case conf::ObjectType::ENEMY:
             {
                 can_move = false;
+                /*
+                position += {compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds(),
+                             compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds()};
+                             */
                 break;
             }
             
@@ -145,7 +152,7 @@ void Player::interract(std::list<GameObject *>& objects)
                 }
 
                 bul->set_active(false);
-                get_damage();
+                get_damage(1);
                 break;
             }
             default:
@@ -154,8 +161,9 @@ void Player::interract(std::list<GameObject *>& objects)
     }
 }
 
-void Player::get_damage()
+void Player::get_damage(int size)
 {
-    health--;
+    if(health > 0)
+        health -= size;
 }
 

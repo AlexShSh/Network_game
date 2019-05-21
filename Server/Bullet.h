@@ -18,5 +18,5 @@ public:
 private:
     Player* creator;
 
-    void interract(std::list<GameObject*>& objects) override;
+    void interract(std::list<GameObject*>& objects, sf::Time time) override;
 };
