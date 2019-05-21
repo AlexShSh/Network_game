@@ -33,8 +33,7 @@ int main()
     return 0;
 }
 
-<<<<<<< HEAD
-=======
+
 //sf::IpAddress::LocalHost
 /*
 int main()
@@ -49,4 +48,4 @@ int main()
 
     return 0;
 }*/
->>>>>>> upstream/graph_engine
+
