@@ -11,8 +11,8 @@ namespace net
 enum
 {
 
-    ServerPort = 27478,
-    ServerConnectPort = 35157,
+    ServerPort = 22418,
+    ServerConnectPort = 32157,
     ConnectAttempt = 5,
     ConnectionTimeout = 500,
     ReconnectTimeout = 250,

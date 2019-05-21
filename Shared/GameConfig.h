@@ -44,7 +44,7 @@ namespace Player
     const int text_indent_y = -60;
     const float collide_speed = 0.01;
 
-    const char font_filename[] = "images/CyrilicOld.TTF";
+    const char font_filename[] = "images/CyrilicOld.ttf";
 }
 
 namespace Bullet
