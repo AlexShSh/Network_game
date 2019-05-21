@@ -55,7 +55,7 @@ void Game::update_player(sf::Packet& packet)
 
     packet >> id >> x >> y >> dir_tmp >> current_frame >> health;
 
-    //std::cout << id << " " << x << " " << y << " " << dir_tmp << " " << current_frame << std::endl;
+
 
     auto dir = (conf::Dir) dir_tmp;
 
