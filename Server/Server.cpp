@@ -159,8 +159,6 @@ void Server::recive()
 
                         std::cout << "Client " << id << " was disconected\n";
                     }
-
-
                 }
                 else if (status == sf::Socket::Disconnected)
                 {
