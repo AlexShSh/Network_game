@@ -20,7 +20,7 @@ enum
     ReconnectDelay = 30,
     Timeout = 50,
     NoID = 0,
-    MaxClientsNum = 2
+    MaxClientsNum = 20
 };
 
 enum PacketType

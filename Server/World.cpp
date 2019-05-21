@@ -23,7 +23,6 @@ void World::create_players(std::list<ClientId> clients)
         players.emplace(cl, new_pl);
         objects.emplace_back(new_pl);
     }
-    wave = 0;
 }
 
 bool World::upd_players_from_packs(std::map<ClientId, ClientHandler*>* clients)
@@ -137,7 +136,7 @@ int World::disact_players_num() {
 
 void World::generator(sf::Time time)
 {
-
+    std::cout << "Good job" << std::endl;
     if(time.asSeconds()/20 > wave)
     {
         wave++;

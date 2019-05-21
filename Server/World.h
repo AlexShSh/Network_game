@@ -24,6 +24,7 @@ public:
     void make_shoot(Player* player);
     void generator(sf::Time time);
     int disact_players_num();
+    int wave;
 
 
 private:
@@ -32,7 +33,7 @@ private:
     std::list<Bullet*> disactive_bullets;
     std::list<Enemy*> enemies;
 
-    int wave;
+
     int counter;
     
     Bullet* get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator);

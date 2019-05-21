@@ -22,6 +22,8 @@ bool Game_Server::play()
     while (server.empty());
 
     sf::Clock timer;
+    world->wave = 0;
+    sf::Clock begin_time;
     std::list<ClientId> disc = {};
 
     while (server.is_active())
@@ -38,6 +40,7 @@ bool Game_Server::play()
                 continue;
             }
 
+            world->generator(begin_time.getElapsedTime());
             world->update_objects(timer.restart());
 
             sf::Packet pack = world->create_game_state();
