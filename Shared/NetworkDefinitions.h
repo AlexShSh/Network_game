@@ -10,8 +10,9 @@ namespace net
 
 enum
 {
-    ServerPort = 27478,
-    ServerConnectPort = 35157,
+
+    ServerPort = 22418,
+    ServerConnectPort = 32157,
     ConnectAttempt = 5,
     ConnectionTimeout = 500,
     ReconnectTimeout = 250,
@@ -19,7 +20,7 @@ enum
     ReconnectDelay = 30,
     Timeout = 50,
     NoID = 0,
-    MaxClientsNum = 2
+    MaxClientsNum = 20
 };
 
 enum PacketType

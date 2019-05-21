@@ -240,6 +240,7 @@ bool Server::start(World *world)
 {
     world->create_players(clients);
 
+    sf::Clock begin_timer;
     sf::Clock timer;
     int restart_counter = 0;
 
@@ -252,6 +253,7 @@ bool Server::start(World *world)
                 return false;
             }
 
+            world->generator(begin_timer.getElapsedTime());
             world->update_objects(timer.restart());
 
             sf::Packet pack = world->create_game_state();
@@ -283,7 +285,8 @@ void Server::add_disconnected_packet(sf::Packet &packet)
 {
     for (auto cl : comp_disconnected)
     {
-        packet << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f << (sf::Int16) conf::Dir::NONE << -1.f;
+        packet << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f
+                << (sf::Int16) conf::Dir::NONE << -1.f << -1.f;
     }
 }*/
 

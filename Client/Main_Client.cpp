@@ -7,13 +7,16 @@ int main()
     /*
     try
     {
+
         std::cout << "Enter server ip: ";
         std::string str;
         std::cin >> str;
 
         sf::IpAddress server_ip(str);
 
+
         Client client(server_ip, net::ServerPort);
+
         Game game;
 
         client.start(&game);
@@ -30,6 +33,7 @@ int main()
     return 0;
 }
 
+
 //sf::IpAddress::LocalHost
 /*
 int main()
@@ -44,3 +48,4 @@ int main()
 
     return 0;
 }*/
+

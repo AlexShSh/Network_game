@@ -8,7 +8,7 @@ Game::Game() :
 void Game::update_objects(sf::Packet& packet)
 {
     sf::Int16 type_tmp;
-    int counter = 0;
+    int counter_bull = 0, counter_dev = 0;
 
     while (packet >> type_tmp)
     {
@@ -20,17 +20,28 @@ void Game::update_objects(sf::Packet& packet)
 
         else if (type == conf::ObjectType::BULLET)
         {
-            if (counter == bullets.size())
+            if(counter_bull == bullets.size())
+
                 bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
-                                                 1500, 1000, conf::Dir::LEFT));
-            update_bullet(packet, counter++);
+                        conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::Dir::LEFT));
+            update_bullet(packet, counter_bull++);
+        }
+        else if(type == conf::ObjectType::ENEMY)
+        {
+            if(counter_dev == enemies.size())
+                enemies.emplace_back(GraphObject(&enemy, conf::Enemy::sprite_width, conf::Enemy::sprite_height,
+                        conf::Enemy::default_pos_x, conf::Enemy::default_pos_y, conf::Dir::LEFT));
+            update_ememy(packet, counter_dev++);
         }
         else
             continue;
     }
 
-    while(counter < bullets.size())
-        bullets[counter++].set_position(1500, 1000, conf::LEFT);
+    while(counter_bull < bullets.size())
+        bullets[counter_bull++].set_position(conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::LEFT);
+
+    while(counter_dev < enemies.size())
+        enemies[counter_dev++].set_position(conf::Enemy::default_pos_x, conf::Enemy::default_pos_y, conf::LEFT);
 }
 
 
@@ -75,6 +86,20 @@ void Game::update_player(sf::Packet& packet)
     player_hp.str(std::string());
 }
 
+void Game::update_ememy(sf::Packet &packet, int counter)
+{
+    float x, y;
+    int current_frame;
+    sf::Int16 dir_tmp;
+    int number;
+
+    packet >> number >> x >> y >> dir_tmp >> current_frame;
+
+    auto dir = (conf::Dir) dir_tmp;
+
+    enemies[counter].frame_pos(dir, current_frame);
+    enemies[counter].set_position(x, y, dir);
+}
 
 void Game::update_bullet(sf::Packet& packet, int counter)
 {
@@ -99,6 +124,7 @@ void Game::start()
     robot1.loadFromFile(conf::Player::filename1);
     robot2.loadFromFile(conf::Player::filename2);
     bullet.loadFromFile(conf::Bullet::filename);
+    enemy.loadFromFile(conf::Enemy::filename);
     map.loadFromFile(conf::Map::filename);
 
     Map = GraphObject(&map, conf::Map::sprite_width, conf::Map::sprite_height, 0, 0, conf::DOWN);
@@ -150,6 +176,11 @@ void Game::render()
     for(auto& text : hp)
         window->draw(text.second);
 
+    for(auto& en : enemies)
+    {
+        en.draw(window);
+    }
+
     window->display();
 }
 
@@ -193,9 +224,9 @@ void Game::map_render(sf::RenderWindow* window) {
     for (int y = 0; y < conf::Map::frame_height; y++)
         for (int x = 0; x < conf::Map::frame_width; x++)
         {
-            if (conf::Map::TileMap[y][x] == ' ')
+            if(conf::Map::TileMap[y][x] == ' ')
                 Map.frame_pos(conf::DOWN, 0);
-            if (conf::Map::TileMap[y][x] == '0')
+            if(conf::Map::TileMap[y][x] == '0')
                 Map.frame_pos(conf::DOWN, 1);
             Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
             Map.draw(window);

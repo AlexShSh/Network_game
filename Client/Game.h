@@ -18,6 +18,7 @@ public:
     void update_objects(sf::Packet& packet);
     void update_player(sf::Packet& packet);
     void update_bullet(sf::Packet& packet, int counter);
+    void update_ememy(sf::Packet& packet, int counter);
     void keyboard_reader();
     PlayerInput get_input();
     void render();
@@ -30,6 +31,7 @@ public:
 private:
     std::map<ClientId, GraphObject> players;
     std::vector<GraphObject> bullets;
+    std::vector<GraphObject> enemies;
     KeyboardInterface keyboard;
     sf::RenderWindow* window;
     PlayerInput inp;
@@ -42,6 +44,7 @@ private:
     sf::Texture robot1;
     sf::Texture robot2;
     sf::Texture bullet;
+    sf::Texture enemy;
     sf::Texture map;
     GraphObject Map;
 
