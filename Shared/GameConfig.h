@@ -65,7 +65,7 @@ namespace Enemy
 {
     const char filename[] = "images/Devil3.0.png";
     const float speed = 0.1;
-    const float animation_speed = 0.02;
+    const float animation_speed = 0.01;
     const int frame_amount = 8;
     const int sprite_width = 64;
     const int sprite_height = 64;

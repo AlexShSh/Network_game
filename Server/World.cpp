@@ -136,7 +136,6 @@ int World::disact_players_num() {
 
 void World::generator(sf::Time time)
 {
-    std::cout << "Good job" << std::endl;
     if(time.asSeconds()/20 > wave)
     {
         wave++;
