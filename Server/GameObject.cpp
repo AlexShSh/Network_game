@@ -73,7 +73,7 @@ conf::ObjectType GameObject::get_type() const
 int GameObject::animate(float time)
 {
     current_frame += animation_speed * time;
-    if (current_frame > frame_amount)
+    if (current_frame >= frame_amount)
         current_frame = 0;
 
     return (int) current_frame;
