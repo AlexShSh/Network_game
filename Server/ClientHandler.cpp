@@ -5,6 +5,12 @@ ClientHandler::ClientHandler(sf::TcpSocket *sock, ClientId id_) :
     id(id_)
 {}
 
+ClientHandler::ClientHandler(const ClientHandler &hndl)
+{
+    id = hndl.id;
+    socket = hndl.socket;
+}
+
 sf::TcpSocket* ClientHandler::get_socket() const
 {
     return socket;
@@ -28,4 +34,10 @@ ClientHandler::~ClientHandler()
 void ClientHandler::set_packet(sf::Packet packet)
 {
     rcv_pack = packet;
+}
+
+void ClientHandler::change_socket(sf::TcpSocket *new_socket)
+{
+    delete socket;
+    socket = new_socket;
 }

@@ -1,8 +1,12 @@
-#include "Server.h"
+#include "Game_Server.h"
+#include <X11/Xlib.h>
+
 
 int main()
 {
-    Server server;
+    XInitThreads();
+
+   /* Server server;
     server.connect_clients();
 
     while (true)
@@ -13,7 +17,27 @@ int main()
 
         if (!status)
             break;
-    }
+    }*/
+
+    Game_Server game_server;
+    game_server.play();
+
 
     return 0;
 }
+
+
+
+/*
+int main()
+{
+    Server server;
+
+    server.start();
+    while (server.is_active())
+    {
+        server.recive();
+    }
+
+    return 0;
+}*/

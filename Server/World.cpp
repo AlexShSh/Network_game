@@ -3,33 +3,37 @@
 #include <iostream>
 
 
-void World::create_players(std::list<ClientHandler> &clients) {
-    for (auto &cl : clients) {
-        ClientId id = cl.get_id();
-
+void World::create_players(std::list<ClientId> clients)
+{
+    for (auto cl : clients)
+    {
         float x = 0, y = 0;
-        if (id % 2) {
-            x = 100 * (1 + (id / 2));
+        if (cl % 2)
+        {
+            x = 100 * (1 + (cl / 2));
             y = 100;
-        } else {
-            x = conf::Map::width - 100 * (id / 2);
+        }
+        else
+        {
+            x = conf::Map::width - 100 * (cl / 2);
             y = conf::Map::height - 100;
         }
 
-        auto new_pl = new Player(x, y, conf::Dir::LEFT, id);
-        players.emplace(id, new_pl);
+        auto new_pl = new Player(x, y, conf::Dir::LEFT, cl);
+        players.emplace(cl, new_pl);
         objects.emplace_back(new_pl);
-
     }
     wave = 0;
 }
 
-bool World::upd_players_from_packs(std::list<ClientHandler> &clients) {
-    if (clients.empty())
+bool World::upd_players_from_packs(std::map<ClientId, ClientHandler*>* clients)
+{
+    if (clients->empty())
         return false;
 
-    for (auto &cl : clients) {
-        players[cl.get_id()]->open_packet(cl.get_rcv_packet());
+    for (auto& cl : *clients)
+    {
+        players[cl.second->get_id()]->open_packet(cl.second->get_rcv_packet());
     }
     return true;
 }
@@ -70,10 +74,14 @@ sf::Packet World::create_game_state() {
     return packet;
 }
 
-void World::delete_disconnected(std::list<ClientId> &disconnected) {
-    for (auto &id : disconnected) {
-        for (auto it = objects.begin(); it != objects.end(); it++) {
-            if (*it == players[id]) {
+void World::delete_disconnected(std::list<ClientId> disconnected)
+{
+    for (auto& id : disconnected)
+    {
+        for (auto it = objects.begin(); it != objects.end(); it++)
+        {
+            if (*it == players[id])
+            {
                 delete players[id];
                 players.erase(id);
                 objects.erase(it);

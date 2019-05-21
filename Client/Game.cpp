@@ -18,9 +18,10 @@ void Game::update_objects(sf::Packet& packet)
         if (type == conf::ObjectType::PLAYER)
             update_player(packet);
 
-        else if(type == conf::ObjectType::BULLET)
+        else if (type == conf::ObjectType::BULLET)
         {
             if(counter_bull == bullets.size())
+
                 bullets.emplace_back(GraphObject(&bullet, conf::Bullet::sprite_width, conf::Bullet::sprite_height,
                         conf::Bullet::default_pos_x, conf::Bullet::default_pos_y, conf::Dir::LEFT));
             update_bullet(packet, counter_bull++);
@@ -54,23 +55,25 @@ void Game::update_player(sf::Packet& packet)
 
     packet >> id >> x >> y >> dir_tmp >> current_frame >> health;
 
+    //std::cout << id << " " << x << " " << y << " " << dir_tmp << " " << current_frame << std::endl;
+
     auto dir = (conf::Dir) dir_tmp;
 
     if (dir == conf::Dir::NONE)
     {
         players.erase(id);
-        hp.erase(hp.begin() + id - 1);
+        hp.erase(id);
         return;
     }
 
     if (players.count(id) == 0)
     {
-    sf::Texture* tx = (id % 2 ? &robot1 : &robot2);
+        sf::Texture* tx = (id % 2 ? &robot1 : &robot2);
 
-    players.emplace(id, GraphObject(tx, conf::Player::sprite_width, conf::Player::sprite_height,
+        players.emplace(id, GraphObject(tx, conf::Player::sprite_width, conf::Player::sprite_height,
                                     250, 250, conf::Dir::LEFT));
-        hp.emplace_back(sf::Text("", cyrilic, 20));
-        hp.back().setFillColor(sf::Color::Red);
+        hp.emplace(id, sf::Text("", cyrilic, 20));
+        hp[id].setFillColor(sf::Color::Red);
 
     }
 
@@ -78,8 +81,8 @@ void Game::update_player(sf::Packet& packet)
     players[id].set_position(x, y, dir);
 
     player_hp << health;
-    hp[id - 1].setString(conf::Player::hp + player_hp.str());
-    hp[id - 1].setPosition(x + conf::Player::text_indent_x, y + conf::Player::text_indent_y);
+    hp[id].setString(conf::Player::hp + player_hp.str());
+    hp[id].setPosition(x + conf::Player::text_indent_x, y + conf::Player::text_indent_y);
     player_hp.str(std::string());
 }
 
@@ -142,24 +145,21 @@ void Game::keyboard_reader()
             conf::Dir dir = keyboard.get_direction();
             bool is_shoot = keyboard.get_shoot();
 
-            packet.clear();
-            if (dir != conf::Dir::NONE || is_shoot)
-            {
-                packet << (sf::Int16) dir << (sf::Int16) is_shoot;
-            }
+            mutex.lock();
+            inp.dir = dir;
+            inp.is_shoot = is_shoot;
+            mutex.unlock();
 
             sf::sleep(sf::milliseconds(20));
         }
-
     }
 }
 
-sf::Packet Game::get_packet()
+PlayerInput Game::get_input()
 {
-    sf::Packet copy = packet;
-    packet.clear();
+    sf::Lock lock(mutex);
 
-    return copy;
+    return inp;
 }
 
 
@@ -174,7 +174,7 @@ void Game::render()
         bul.draw(window);
 
     for(auto& text : hp)
-        window->draw(text);
+        window->draw(text.second);
 
     for(auto& en : enemies)
     {
@@ -187,6 +187,7 @@ void Game::render()
 Game::~Game()
 {
     window->close();
+
     delete window;
 }
 
@@ -227,7 +228,7 @@ void Game::map_render(sf::RenderWindow* window) {
                 Map.frame_pos(conf::DOWN, 0);
             if(conf::Map::TileMap[y][x] == '0')
                 Map.frame_pos(conf::DOWN, 1);
-            Map.set_position((x + 0.5) * conf::Map::sprite_width, (y + 0.5) * conf::Map::sprite_height, conf::NONE);
+            Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
             Map.draw(window);
         }
 }

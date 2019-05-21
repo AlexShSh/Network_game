@@ -16,11 +16,11 @@ class World
 public:
     World() = default;
     ~World();
-    void create_players(std::list<ClientHandler>& clients);
-    bool upd_players_from_packs(std::list<ClientHandler>& clients);
+    void create_players(std::list<ClientId > clients);
+    bool upd_players_from_packs(std::map<ClientId, ClientHandler*>* clients);
     void update_objects(sf::Time time);
     sf::Packet create_game_state();
-    void delete_disconnected(std::list<ClientId>& disconnected);
+    void delete_disconnected(std::list<ClientId> disconnected);
     void make_shoot(Player* player);
     void generator(sf::Time time);
     int disact_players_num();

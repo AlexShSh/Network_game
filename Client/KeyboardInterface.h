@@ -11,3 +11,9 @@ public:
     conf::Dir get_direction();
     bool get_shoot();
 };
+
+struct PlayerInput
+{
+    conf::Dir dir;
+    bool is_shoot;
+};
