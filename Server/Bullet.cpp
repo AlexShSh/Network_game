@@ -39,12 +39,12 @@ void Bullet::compress_packet(sf::Packet &packet)
 
 }
 
-void Bullet::interract(std::list<GameObject *> &objects)
+void Bullet::interract(std::list<GameObject *> &objects, sf::Time time)
 {
     for (auto obj : objects)
     {
         auto type = obj->get_type();
-        if (type != conf::ObjectType::PLAYER)
+        if (type != conf::ObjectType::PLAYER && type != conf::ObjectType::ENEMY)
             continue;
 
         if (!collider.detect_collision(obj->get_collider()))

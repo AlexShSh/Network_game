@@ -5,6 +5,12 @@
 namespace conf
 {
 
+enum
+{
+    ConDelay = 50,
+    RestartWaiting = 100
+};
+
 enum Dir
 {
     DOWN = 0,
@@ -28,16 +34,17 @@ namespace Player
     const float speed = 0.2;
     const float animation_speed = 0.1;
     const int frame_amount = 16;
-    const int health = 5;
+    const int health = 1000;
     const int shooting_delay = 500;
     const int sprite_width = 64;
     const int sprite_height = 64;
-    const int obj_width = 40;
-    const int obj_height = 55;
+    const int obj_width = 20;
+    const int obj_height = 25;
     const int text_indent_x = -20;
     const int text_indent_y = -60;
+    const float collide_speed = 0.01;
 
-    const char font_filename[] = "images/CyrilicOld.ttf";
+    const char font_filename[] = "images/CyrilicOld.TTF";
 }
 
 namespace Bullet
@@ -50,6 +57,24 @@ namespace Bullet
     const int sprite_height = 64;
     const int obj_width = 20;
     const int obj_height = 20;
+    const float default_pos_x = 1500;
+    const float default_pos_y = 1000;
+}
+
+namespace Enemy
+{
+    const char filename[] = "images/Devil3.0.png";
+    const float speed = 0.1;
+    const float animation_speed = 0.02;
+    const int frame_amount = 8;
+    const int sprite_width = 64;
+    const int sprite_height = 64;
+    const int obj_width = 25;
+    const int obj_height = 30;
+    const int health = 1;
+    const float default_pos_x = 1500;
+    const float default_pos_y = 1000;
+    const float collide_speed = 0.01;
 }
 
 

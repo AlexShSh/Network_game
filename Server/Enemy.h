@@ -3,29 +3,26 @@
 #include "GameObject.h"
 #include "../Shared/NetworkDefinitions.h"
 
-class Player : public GameObject
+class Enemy : public GameObject
 {
 public:
-    Player(float x, float y, conf::Dir dir_, ClientId id_);
-    void open_packet(sf::Packet packet);
+    Enemy(float x, float y, conf::Dir dir, int number);
 
     void compress_packet(sf::Packet& packet) override;
     void update(sf::Time time, std::list<GameObject*>& objects) override;
 
-    bool is_shoot() const;
-    ClientId get_id() const;
-    void set_shoot_ready(bool st);
+    conf::Dir get_direction(std::list<GameObject *>& objects);
+
+    int get_number() const;
 
     void get_damage(int size) override;
 
 private:
+    int number;
     int health;
-    ClientId id;
     conf::Dir moving_dir;
-    bool shoot_click;
-    bool shoot_ready;
-    sf::Time time_after_shoot;
     bool can_move;
+    bool death;
 
     void interract(std::list<GameObject *>& objects, sf::Time time) override;
 };

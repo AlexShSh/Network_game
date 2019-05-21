@@ -134,3 +134,47 @@ bool GameObject::check_border() const
 
     return true;
 }
+
+float GameObject::distance(sf::Vector2f pos)
+{
+    return (position.x - pos.x) * (position.x - pos.x) + (position.y - pos.y) * (position.y - pos.y);
+}
+
+void GameObject::get_damage(int size)
+{}
+
+float GameObject::fast_square_root(float n) {
+    n = 1.0f / n;
+    long i;
+    float x, y;
+
+    x = n * 0.5f;
+    y = n;
+    i = *(long *) &y;
+    i = 0x5f3759df - (i >> 1);
+    y = *(float *) &i;
+    y = y * (1.5f - (x * y * y));
+    return y;
+}
+
+sf::Vector2f GameObject::compute_unit_vector(const sf::Vector2f &first, const sf::Vector2f &second)
+{
+    auto delta_x = first.x - second.x;
+    auto delta_y = first.y - second.y;
+
+    sf::Vector2f radius_vector(delta_x, delta_y);
+
+    float vector_norm = fast_square_root((delta_x) * (delta_x) + (delta_y) * (delta_y));
+
+    // normalize
+    radius_vector.x = radius_vector.x / vector_norm;
+    radius_vector.y = radius_vector.y / vector_norm;
+
+    return {radius_vector.x, radius_vector.y};
+}
+
+
+sf::Vector2f operator*(const sf::Vector2f &first, float multiplier)
+{
+    return {first.x * multiplier, first.y * multiplier};
+}

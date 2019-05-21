@@ -1,4 +1,5 @@
 #include "KeyboardInterface.h"
+#include <iostream>
 
 conf::Dir KeyboardInterface::get_direction()
 {
