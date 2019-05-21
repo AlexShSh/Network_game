@@ -19,7 +19,10 @@ public:
     //bool start(World* world);
     std::list<ClientId> get_new_clients();
     std::list<ClientId> get_disconnected_clients();
+    std::map<ClientId, ClientHandler*>* get_clients_ptr();
     bool is_active();
+    bool empty();
+    void stop();
 
     ~Server();
 

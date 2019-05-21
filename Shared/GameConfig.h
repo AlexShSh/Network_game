@@ -5,6 +5,12 @@
 namespace conf
 {
 
+enum
+{
+    ConDelay = 50,
+    RestartWaiting = 100
+};
+
 enum Dir
 {
     DOWN = 0,

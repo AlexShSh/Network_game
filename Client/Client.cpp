@@ -49,8 +49,8 @@ bool Client::find_server()
 
 bool Client::send(sf::Packet &packet)
 {
-    sf::Packet send_packet;
-    send_packet << (sf::Int16) net::Data << packet;
+    sf::Packet send_packet = packet;
+    //send_packet << (sf::Int16) net::Data << packet;
 
     auto status = socket.send(send_packet);
     if (status == sf::Socket::Done)
@@ -69,7 +69,16 @@ bool Client::send(sf::Packet &packet)
 bool Client::recieve(sf::Packet &packet)
 {
     sf::Packet rcv_pack;
-    auto status = socket.receive(rcv_pack);
+    socket.setBlocking(true);
+
+    sf::Clock timer;
+    sf::Socket::Status status = {};
+    while (timer.getElapsedTime().asMilliseconds() < net::Timeout)
+    {
+        status = socket.receive(rcv_pack);
+        if (status == sf::Socket::Status::Done)
+            break;
+    }
 
     if (status == sf::Socket::Disconnected)
     {
@@ -78,10 +87,10 @@ bool Client::recieve(sf::Packet &packet)
     else if (status != sf::Socket::Done)
         std::cout << "Can't recive packet" << std::endl;
 
-    sf::Int16 type_tmp;
-    rcv_pack >> type_tmp;
-    auto type = (net::PacketType) type_tmp;
-    if (type == net::PacketType::Data)
+    //sf::Int16 type_tmp;
+    //rcv_pack >> type_tmp;
+    //auto type = (net::PacketType) type_tmp;
+    //if (type == net::PacketType::Data)
     {
         packet.clear();
         packet = rcv_pack;
@@ -159,7 +168,7 @@ bool Client::start(Game* game)
         game->update_objects(packet);
         game->render();
 
-        sf::Packet send_packet = game->get_packet();
+        sf::Packet send_packet = game->get_input();
         send(send_packet);
     }
     game->set_active(false);

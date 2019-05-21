@@ -206,15 +206,17 @@ bool Server::send_serv_full(sf::TcpSocket *socket)
 
 bool Server::broadcast(sf::Packet &packet)
 {
-    sf::Packet send_pack;
-    send_pack << (sf::Int16) net::PacketType::Data << packet;
+    sf::Packet send_pack = packet;
+    //send_pack << (sf::Int16) net::PacketType::Data << packet;
+
+    sf::Lock lock(mutex);
     for (auto& cl : clients)
     {
         auto sock = cl.second->get_socket();
         auto status = sock->send(send_pack);
 
         while (status == sf::Socket::Partial)
-            status = sock->send(packet);
+            status = sock->send(send_pack);
 
         if (status == sf::Socket::Done)
             continue;
@@ -229,6 +231,7 @@ bool Server::broadcast(sf::Packet &packet)
 
 Server::~Server()
 {
+    set_active(false);
     std::cout << "Server was destroyed" << std::endl;
 }
 
@@ -356,6 +359,7 @@ void Server::cmd_line_read()
 
 void Server::start()
 {
+    set_active(true);
     listen_con_thread.launch();
     connect_clients_thread.launch();
     cmd_line_thread.launch();
@@ -373,7 +377,7 @@ void Server::check_temp_disconnected()
             auto id = cl.first;
 
             selector.remove(*sock);
-            comp_disconnected.emplace_back(id);
+            comp_disconnected.push_back(id);
             cur_clients--;
             delete clients[id];
             clients.erase(id);
@@ -390,6 +394,7 @@ void Server::check_temp_disconnected()
 
 std::list<ClientId> Server::get_new_clients()
 {
+    sf::Lock lock(mutex);
     auto cpy = new_clients;
     new_clients.clear();
     return cpy;
@@ -397,7 +402,24 @@ std::list<ClientId> Server::get_new_clients()
 
 std::list<ClientId> Server::get_disconnected_clients()
 {
+    sf::Lock lock(mutex);
     auto cpy = comp_disconnected;
     comp_disconnected.clear();
     return cpy;
+}
+
+bool Server::empty()
+{
+    sf::Lock lock(mutex);
+    return clients.empty();
+}
+
+std::map<ClientId, ClientHandler*>* Server::get_clients_ptr()
+{
+    return &clients;
+}
+
+void Server::stop()
+{
+    set_active(false);
 }
