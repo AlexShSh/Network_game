@@ -73,7 +73,7 @@ conf::ObjectType GameObject::get_type() const
 int GameObject::animate(float time)
 {
     current_frame += animation_speed * time;
-    if (current_frame > frame_amount)
+    if (current_frame >= frame_amount)
         current_frame = 0;
 
     return (int) current_frame;
@@ -169,7 +169,6 @@ sf::Vector2f GameObject::compute_unit_vector(const sf::Vector2f &first, const sf
     // normalize
     radius_vector.x = radius_vector.x / vector_norm;
     radius_vector.y = radius_vector.y / vector_norm;
-
     return {radius_vector.x, radius_vector.y};
 }
 

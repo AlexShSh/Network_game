@@ -49,10 +49,8 @@ bool Client::find_server()
 
 bool Client::send(sf::Packet &packet)
 {
-    sf::Packet send_packet = packet;
-    //send_packet << (sf::Int16) net::Data << packet;
 
-    auto status = socket.send(send_packet);
+    auto status = socket.send(packet);
     if (status == sf::Socket::Done)
     {
         return true;
@@ -69,7 +67,7 @@ bool Client::send(sf::Packet &packet)
 bool Client::recieve(sf::Packet &packet)
 {
     sf::Packet rcv_pack;
-    socket.setBlocking(true);
+    socket.setBlocking(false);
 
     sf::Clock timer;
     sf::Socket::Status status = {};
@@ -79,22 +77,21 @@ bool Client::recieve(sf::Packet &packet)
         if (status == sf::Socket::Status::Done)
             break;
     }
-
-    if (status == sf::Socket::Disconnected)
+    switch (status)
     {
-        return reconect();
+        case sf::Socket::Done:
+            packet.clear();
+            packet = rcv_pack;
+            break;
+        case sf::Socket::Disconnected:
+            return reconect();
+        case sf::Socket::Error:
+            std::cout << "Error reciving packet " << status << std::endl;
+            return false;
+        default:
+            break;
     }
-    else if (status != sf::Socket::Done)
-        std::cout << "Can't recive packet" << std::endl;
 
-    //sf::Int16 type_tmp;
-    //rcv_pack >> type_tmp;
-    //auto type = (net::PacketType) type_tmp;
-    //if (type == net::PacketType::Data)
-    {
-        packet.clear();
-        packet = rcv_pack;
-    }
     return true;
 }
 
@@ -121,6 +118,7 @@ bool Client::recive_id()
     }
 
     auto type = (net::PacketType) type_tmp;
+
     if (type == net::PacketType::SendID)
     {
         packet >> id;
@@ -138,43 +136,6 @@ bool Client::recive_id()
         return false;
     }
 }
-/*
-void keyboard_reader(Game* game)
-{
-    game->keyboard_reader();
-}
- */
-/*
-bool Client::start(Game* game)
-{
-    if (!recive_id())
-        return false;
-
-    sf::Packet packet;
-
-    game->start();
-
-    sf::Thread keyboard_thread(keyboard_reader, game);
-    keyboard_thread.launch();
-
-    while (true)
-    {
-        if (!game->update_window())
-            break;
-
-        if (!recieve(packet))
-            break;
-
-        game->update_objects(packet);
-        game->render();
-
-        sf::Packet send_packet = game->get_input();
-        send(send_packet);
-    }
-    game->set_active(false);
-    return true;
-}
-*/
 
 Client::~Client()
 {
@@ -243,5 +204,9 @@ void Client::disconnect()
     send(packet);
 
     socket.disconnect();
-    return;
+}
+
+ClientId Client::get_id()
+{
+    return id;
 }

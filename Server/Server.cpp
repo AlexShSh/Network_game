@@ -29,8 +29,6 @@ void Server::connect_clients()
 
 bool Server::add_client()
 {
-    std::cout << "new client want to connect\n";
-
     auto new_socket = new sf::TcpSocket;
     new_socket->setBlocking(false);
 
@@ -159,8 +157,6 @@ void Server::recive()
 
                         std::cout << "Client " << id << " was disconected\n";
                     }
-
-
                 }
                 else if (status == sf::Socket::Disconnected)
                 {
@@ -206,21 +202,18 @@ bool Server::send_serv_full(sf::TcpSocket *socket)
 
 bool Server::broadcast(sf::Packet &packet)
 {
-    sf::Packet send_pack = packet;
-    //send_pack << (sf::Int16) net::PacketType::Data << packet;
-
     sf::Lock lock(mutex);
     for (auto& cl : clients)
     {
         auto sock = cl.second->get_socket();
-        auto status = sock->send(send_pack);
+        auto status = sock->send(packet);
 
         while (status == sf::Socket::Partial)
-            status = sock->send(send_pack);
+            status = sock->send(packet);
 
         if (status == sf::Socket::Done)
             continue;
-        else
+        else if (status != sf::Socket::Disconnected)
         {
             std::cout << "Couldn't send packet" << std::endl;
             return false;
@@ -234,61 +227,6 @@ Server::~Server()
     set_active(false);
     std::cout << "Server was destroyed" << std::endl;
 }
-
-/*
-bool Server::start(World *world)
-{
-    world->create_players(clients);
-
-    sf::Clock begin_timer;
-    sf::Clock timer;
-    int restart_counter = 0;
-
-    while (true)
-    {
-        if (timer.getElapsedTime().asMilliseconds() >= con_delay)
-        {
-            if (!world->upd_players_from_packs(clients))
-            {
-                return false;
-            }
-
-            world->generator(begin_timer.getElapsedTime());
-            world->update_objects(timer.restart());
-
-            sf::Packet pack = world->create_game_state();
-            if (!comp_disconnected.empty())
-            {
-                add_disconnected_packet(pack);
-                comp_disconnected.clear();
-            }
-
-            broadcast(pack);
-
-            recive();
-            if (!comp_disconnected.empty())
-            {
-                world->delete_disconnected(comp_disconnected);
-            }
-            if (world->disact_players_num() >= clients.size() - 1 && clients.size() != 1)
-            {
-                restart_counter++;
-                if (restart_counter >= net::RestartWaiting)
-                    return true;
-            }
-        }
-    }
-}
-*/
-/*
-void Server::add_disconnected_packet(sf::Packet &packet)
-{
-    for (auto cl : comp_disconnected)
-    {
-        packet << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f
-                << (sf::Int16) conf::Dir::NONE << -1.f << -1.f;
-    }
-}*/
 
 
 void Server::listen_connection()

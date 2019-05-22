@@ -5,13 +5,13 @@
 
 GraphObject::GraphObject(sf::Texture *texture_, int width_, int height_, float x, float y,
                          conf::Dir dir) :
-   width(width_),
-   height(height_),
-   sprite_coord(x, y),
-   direction(dir)
-
+    texture(texture_),
+    width(width_),
+    height(height_),
+    sprite_coord(x, y),
+    direction(dir),
+    current_frame(0)
 {
-    texture = texture_;
     sprite.setTextureRect(sf::IntRect(0, 0, width, height));
     sprite.setTexture(*texture);
 }
@@ -35,3 +35,8 @@ void GraphObject::frame_pos(conf::Dir direct, int _current_frame)
     sprite.setTextureRect(sf::IntRect(width * (int) current_frame, direct * height, width, height));
 }
 
+void GraphObject::title(int x, int y)
+{
+    sprite.setTexture(*texture);
+    sprite.setTextureRect(sf::IntRect(x - 1 , y -1, width, height));
+}

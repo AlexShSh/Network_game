@@ -8,9 +8,9 @@ Game_Server::Game_Server() :
 }
 
 Game_Server::Game_Server(int max_players) :
-    world(),
     server(max_players)
 {
+    world = new World;
     players = server.get_clients_ptr();
 }
 
@@ -19,9 +19,10 @@ bool Game_Server::play()
 {
     server.start();
 
-    while (server.empty());
+    while (server.is_active() && server.empty());
 
     sf::Clock timer;
+    sf::Clock begin_time;
     std::list<ClientId> disc = {};
 
     while (server.is_active())
@@ -33,11 +34,12 @@ bool Game_Server::play()
             if (!world->upd_players_from_packs(players))
             {
                 delete world;
-                while (server.empty());
+                while (server.is_active() && server.empty());
                 world = new World;
                 continue;
             }
 
+            world->generator(begin_time.getElapsedTime());
             world->update_objects(timer.restart());
 
             sf::Packet pack = world->create_game_state();
@@ -52,13 +54,6 @@ bool Game_Server::play()
 
             disc = server.get_disconnected_clients();
             world->delete_disconnected(disc);
-
-            /*if (world.disact_players_num() >= players->size() - 1 && players->size() != 1)
-            {
-                restart_counter++;
-                if (restart_counter >= conf::RestartWaiting)
-                    return true;
-            }*/
         }
     }
     server.stop();
@@ -67,10 +62,8 @@ bool Game_Server::play()
 
 void Game_Server::add_disconnected(sf::Packet &pack, std::list<ClientId> disc)
 {
-    //std::list<ClientId> disc = server.get_disconnected_clients();
     for (auto cl : disc)
     {
-        std::cout << "!!!0000!!!!\n";
         pack << (sf::Int16) conf::ObjectType::PLAYER << cl << -1.f << -1.f << (sf::Int16) conf::Dir::NONE << -1.f;
     }
 }

@@ -91,8 +91,6 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
 
 void Player::compress_packet(sf::Packet &packet)
 {
-    //std::cout << id << " " << (sf::Int16) dir << std::endl;
-
     packet << (sf::Int16) type << id << position.x << position.y <<
           (sf::Int16) dir << get_current_frame() << health;
 }
@@ -129,18 +127,12 @@ void Player::interract(std::list<GameObject *>& objects, sf::Time time)
             case conf::ObjectType::PLAYER:
             {
                 can_move = false;
-                position += {compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds(),
-                        compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds()};
                 break;
             }
 
             case conf::ObjectType::ENEMY:
             {
                 can_move = false;
-                /*
-                position += {compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds(),
-                             compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds()};
-                             */
                 break;
             }
             

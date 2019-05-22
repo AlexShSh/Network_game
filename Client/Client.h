@@ -12,10 +12,11 @@ public:
     Client();
     bool find_server();
     bool connect();
+    ClientId get_id();
+
     bool send(sf::Packet& packet);
     bool recieve(sf::Packet& packet);
     void disconnect();
-    //bool start(Game* game);
 
     ~Client();
 
