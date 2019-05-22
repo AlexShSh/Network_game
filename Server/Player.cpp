@@ -129,18 +129,12 @@ void Player::interract(std::list<GameObject *>& objects, sf::Time time)
             case conf::ObjectType::PLAYER:
             {
                 can_move = false;
-                position += {compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds(),
-                        compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds()};
                 break;
             }
 
             case conf::ObjectType::ENEMY:
             {
                 can_move = false;
-                /*
-                position += {compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds(),
-                             compute_unit_vector(position, obj->get_position()).x * conf::Player::collide_speed * time.asMilliseconds()};
-                             */
                 break;
             }
             

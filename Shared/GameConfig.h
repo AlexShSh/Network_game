@@ -38,8 +38,8 @@ namespace Player
     const int shooting_delay = 500;
     const int sprite_width = 64;
     const int sprite_height = 64;
-    const int obj_width = 20;
-    const int obj_height = 25;
+    const int obj_width = 27;
+    const int obj_height = 43;
     const int text_indent_x = -20;
     const int text_indent_y = -60;
     const float collide_speed = 0.01;
@@ -55,10 +55,10 @@ namespace Bullet
     const int frame_amount = 8;
     const int sprite_width = 64;
     const int sprite_height = 64;
-    const int obj_width = 20;
-    const int obj_height = 20;
-    const float default_pos_x = 1500;
-    const float default_pos_y = 1000;
+    const int obj_width = 10;
+    const int obj_height = 10;
+    const float default_pos_x = 2500;
+    const float default_pos_y = 2500;
 }
 
 namespace Enemy
@@ -72,9 +72,9 @@ namespace Enemy
     const int obj_width = 25;
     const int obj_height = 30;
     const int health = 1;
-    const float default_pos_x = 1500;
-    const float default_pos_y = 1000;
-    const float collide_speed = 0.02;
+    const float default_pos_x = 2500;
+    const float default_pos_y = 2500;
+    const float collide_speed = 0.023;
 }
 
 
@@ -88,47 +88,58 @@ enum ObjectType
 
 namespace Window
 {
-    const int width = 640;
-    const int height = 512;
+    const int width = 1920;
+    const int height = 1000;
     const char window_name[] = "Clash of Robots";
+    const float zoom = 0.8;
 }
 
 namespace Map
 {
-    const int width = 1120;
-    const int height = 800;
-    const char filename[] = "images/map1.png";
-    const int frame_height = 25;
-    const int frame_width = 35;
+    const int width = 2240;
+    const int height = 1120;
+    const char filename[] = "images/map2.png";
+    const int frame_height = 35;
+    const int frame_width = 70;
 
     const int sprite_width = 32;
     const int sprite_height = 32;
     const sf::String TileMap[conf::Map::frame_height] = {
-            "00000000000000000000000000000000000",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "0                                 0",
-            "00000000000000000000000000000000000",
+            "0000000000000000000000000000000000000000000000000000000000000000000000",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                              1                     0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0              dddd                                                  0",
+            "0              dddd                           u                      0",
+            "0              dddd                           n                      0",
+            "0              dddd                                                  0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0                                                                    0",
+            "0000000000000000000000000000000000000000000000000000000000000000000000",
     };
 
     const int border_width = 32;

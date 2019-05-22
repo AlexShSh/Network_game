@@ -122,6 +122,7 @@ void Game::start()
 {
     window = new sf::RenderWindow(sf::VideoMode(conf::Window::width, conf::Window::height), conf::Window::window_name);
     camera.reset(sf::FloatRect(0, 0 ,conf::Window::width, conf::Window::height));
+    camera.zoom(conf::Window::zoom);
     window->clear();
     window->display();
 
@@ -233,6 +234,34 @@ void Game::map_render(sf::RenderWindow* window) {
                 Map.frame_pos(conf::DOWN, 0);
             if(conf::Map::TileMap[y][x] == '0')
                 Map.frame_pos(conf::DOWN, 1);
+            if(conf::Map::TileMap[y][x] == 'd')
+            {
+                Map.frame_pos(conf::DOWN, 0);
+                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                Map.draw(window);
+                Map.frame_pos(conf::DOWN, 2);
+            }
+            if(conf::Map::TileMap[y][x] == '1')
+            {
+                Map.frame_pos(conf::DOWN, 0);
+                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                Map.draw(window);
+                Map.frame_pos(conf::DOWN, 6);
+            }
+            if(conf::Map::TileMap[y][x] == 'u')
+            {
+                Map.frame_pos(conf::DOWN, 0);
+                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                Map.draw(window);
+                Map.frame_pos(conf::DOWN, 4);
+            }
+            if(conf::Map::TileMap[y][x] == 'n')
+            {
+                Map.frame_pos(conf::DOWN, 0);
+                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                Map.draw(window);
+                Map.frame_pos(conf::DOWN, 5);
+            }
             Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
             Map.draw(window);
         }
@@ -247,9 +276,10 @@ void Game::set_camera(float x, float y)
 {
     float cam_x = x;
     float cam_y = y;
+    float zoom  = conf::Window::zoom;
 
-    float win_x = conf::Window::width;
-    float win_y = conf::Window::height;
+    float win_x = conf::Window::width * zoom;
+    float win_y = conf::Window::height * zoom;
     float map_x = conf::Map::width;
     float map_y = conf::Map::height;
 
