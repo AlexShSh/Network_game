@@ -5,11 +5,7 @@
 namespace conf
 {
 
-enum
-{
-    ConDelay = 50,
-    RestartWaiting = 100
-};
+enum {ConDelay = 50};
 
 enum Dir
 {
@@ -27,7 +23,6 @@ enum Dir
 
 namespace Player
 {
-
     const sf::String hp = "HP:";
     const char filename1[] = "images/walker1.png";
     const char filename2[] = "images/walker3.png";

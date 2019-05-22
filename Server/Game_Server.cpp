@@ -8,9 +8,9 @@ Game_Server::Game_Server() :
 }
 
 Game_Server::Game_Server(int max_players) :
-    world(),
     server(max_players)
 {
+    world = new World;
     players = server.get_clients_ptr();
 }
 
@@ -22,7 +22,6 @@ bool Game_Server::play()
     while (server.is_active() && server.empty());
 
     sf::Clock timer;
-    world->wave = 0;
     sf::Clock begin_time;
     std::list<ClientId> disc = {};
 

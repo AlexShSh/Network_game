@@ -21,11 +21,7 @@ public:
     void update_objects(sf::Time time);
     sf::Packet create_game_state();
     void delete_disconnected(std::list<ClientId> disconnected);
-    void make_shoot(Player* player);
     void generator(sf::Time time);
-    int disact_players_num();
-    int wave;
-
 
 private:
     std::map<ClientId, Player*>  players;
@@ -33,6 +29,8 @@ private:
     std::list<Bullet*> disactive_bullets;
     int enemies;
     int counter;
-    
+    int wave;
+
     Bullet* get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator);
+    void make_shoot(Player* player);
 };
