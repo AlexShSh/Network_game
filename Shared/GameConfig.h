@@ -32,7 +32,7 @@ namespace Player
     const char filename1[] = "images/walker1.png";
     const char filename2[] = "images/walker3.png";
     const float speed = 0.2;
-    const float animation_speed = 0.1;
+    const float animation_speed = 0.04;
     const int frame_amount = 16;
     const int health = 1000;
     const int shooting_delay = 500;
@@ -51,7 +51,7 @@ namespace Bullet
 {
     const char filename[] = "images/FireBall_new.png";
     const float speed = 0.4;
-    const float animation_speed = 0.05;
+    const float animation_speed = 0.01;
     const int frame_amount = 8;
     const int sprite_width = 64;
     const int sprite_height = 64;
@@ -74,7 +74,7 @@ namespace Enemy
     const int health = 1;
     const float default_pos_x = 1500;
     const float default_pos_y = 1000;
-    const float collide_speed = 0.01;
+    const float collide_speed = 0.02;
 }
 
 
@@ -85,6 +85,13 @@ enum ObjectType
     ENEMY,
     BULLET,
 };
+
+namespace Window
+{
+    const int width = 640;
+    const int height = 512;
+    const char window_name[] = "Clash of Robots";
+}
 
 namespace Map
 {
@@ -125,8 +132,6 @@ namespace Map
     };
 
     const int border_width = 32;
-
-    const char window_name[] = "Clash of Robots";
 }
 
 }

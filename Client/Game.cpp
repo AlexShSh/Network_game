@@ -80,6 +80,9 @@ void Game::update_player(sf::Packet& packet)
     players[id].frame_pos(dir, current_frame);
     players[id].set_position(x, y, dir);
 
+    if(id == owner)
+        set_camera(x, y);
+
     player_hp << health;
     hp[id].setString(conf::Player::hp + player_hp.str());
     hp[id].setPosition(x + conf::Player::text_indent_x, y + conf::Player::text_indent_y);
@@ -117,7 +120,8 @@ void Game::update_bullet(sf::Packet& packet, int counter)
 
 void Game::start()
 {
-    window = new sf::RenderWindow(sf::VideoMode(conf::Map::width, conf::Map::height), conf::Map::window_name);
+    window = new sf::RenderWindow(sf::VideoMode(conf::Window::width, conf::Window::height), conf::Window::window_name);
+    camera.reset(sf::FloatRect(0, 0 ,conf::Window::width, conf::Window::height));
     window->clear();
     window->display();
 
@@ -165,6 +169,7 @@ PlayerInput Game::get_input()
 
 void Game::render()
 {
+    window->setView(camera);
     window->clear();
     map_render(window);
     for (auto& pl : players)
@@ -231,4 +236,33 @@ void Game::map_render(sf::RenderWindow* window) {
             Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
             Map.draw(window);
         }
+}
+
+void Game::set_owner(ClientId id)
+{
+    owner = id;
+}
+
+void Game::set_camera(float x, float y)
+{
+    float cam_x = x;
+    float cam_y = y;
+
+    float win_x = conf::Window::width;
+    float win_y = conf::Window::height;
+    float map_x = conf::Map::width;
+    float map_y = conf::Map::height;
+
+    if(cam_x < win_x / 2)
+        cam_x = win_x / 2;
+
+    if(cam_y < win_y / 2)
+        cam_y = win_y / 2;
+
+    if(cam_x > map_x - win_x / 2)
+        cam_x = map_x - win_x / 2;
+    if(cam_y > map_y - win_y / 2)
+        cam_y = map_y - win_y / 2;
+    camera.setCenter(cam_x, cam_y);
+
 }

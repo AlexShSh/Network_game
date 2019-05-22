@@ -245,3 +245,8 @@ void Client::disconnect()
     socket.disconnect();
     return;
 }
+
+ClientId Client::get_id()
+{
+    return id;
+}

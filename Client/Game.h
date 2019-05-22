@@ -23,17 +23,23 @@ public:
     PlayerInput get_input();
     void render();
     void set_active(bool b);
+    void set_owner(ClientId id);
     void map_render(sf::RenderWindow* window);
+    void set_camera(float x, float y);
 
     bool update_window();
 
 
 private:
+    ClientId owner;
+
     std::map<ClientId, GraphObject> players;
     std::vector<GraphObject> bullets;
     std::vector<GraphObject> enemies;
     KeyboardInterface keyboard;
     sf::RenderWindow* window;
+    sf::View camera;
+
     PlayerInput inp;
     bool is_active;
     bool window_focused;
