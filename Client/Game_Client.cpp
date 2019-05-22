@@ -17,6 +17,7 @@ bool Game_Client::play()
 
     sf::Packet packet;
 
+    game.set_owner(client.get_id());
     game.start();
     keyboard_thread.launch();
 

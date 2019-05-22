@@ -35,3 +35,8 @@ void GraphObject::frame_pos(conf::Dir direct, int _current_frame)
     sprite.setTextureRect(sf::IntRect(width * (int) current_frame, direct * height, width, height));
 }
 
+void GraphObject::title(int x, int y)
+{
+    sprite.setTexture(*texture);
+    sprite.setTextureRect(sf::IntRect(x - 1 , y -1, width, height));
+}

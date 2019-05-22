@@ -15,6 +15,7 @@ public:
     void draw(sf::RenderWindow* window);
     void set_position(float x, float y, conf::Dir dir);
     void frame_pos(conf::Dir direct, int current_frame);
+    void title(int x, int y);
 
 protected:
     sf::Texture *texture;

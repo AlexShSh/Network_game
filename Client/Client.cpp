@@ -200,4 +200,10 @@ void Client::disconnect()
     send(packet);
 
     socket.disconnect();
+
+}
+
+ClientId Client::get_id()
+{
+    return id;
 }

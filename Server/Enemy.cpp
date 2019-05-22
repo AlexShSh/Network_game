@@ -1,8 +1,9 @@
 #include <iostream>
+#include <random>
 #include "Enemy.h"
 #include "Bullet.h"
 
-#define kwadrat 6
+#define kwadrat 16
 
 Enemy::Enemy(float x, float y, conf::Dir dir, int number) :
         GameObject(x, y, dir, conf::Enemy::animation_speed, conf::Enemy::frame_amount,
@@ -11,7 +12,8 @@ Enemy::Enemy(float x, float y, conf::Dir dir, int number) :
         number(number),
         moving_dir(conf::Dir::NONE),
         can_move(true),
-        death(false)
+        death(false),
+        generation_count(0)
 {
     collider.set_size({conf::Enemy::obj_width, conf::Enemy::obj_height});
     collider.set_position(position);
@@ -38,13 +40,9 @@ void Enemy::interract(std::list<GameObject *>& objects, sf::Time time)
             case conf::ObjectType::PLAYER:
             {
                 can_move = false;
-                if(!check_border())
-                    break;
-                /*
                 position += {compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds(),
-                             compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds()};
-                             */
-                obj->get_damage(0);
+                             compute_unit_vector(position, obj->get_position()).y * conf::Enemy::collide_speed * time.asMilliseconds()};
+                obj->get_damage(1);
                 break;
             }
             case conf::ObjectType::BULLET:
@@ -61,7 +59,7 @@ void Enemy::interract(std::list<GameObject *>& objects, sf::Time time)
                 if(!check_border())
                     break;
                 position += {compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds(),
-                             compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds()};
+                             compute_unit_vector(position, obj->get_position()).y * conf::Enemy::collide_speed * time.asMilliseconds()};
                 break;
             }
             default:
@@ -133,6 +131,23 @@ conf::Dir Enemy::get_direction(std::list<GameObject *> &objects)
     float min_dist = 0;
     sf::Vector2f player_position;
     float player_dist;
+
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::uniform_int_distribution<> uid(0, 7);
+    std::uniform_int_distribution<> uid2(1, 15);
+
+
+    if(generation_count-- > 0)
+        return old_dir;
+
+    if(uid2(g) == 5)
+    {
+        generation_count = 6;
+        old_dir = (conf::Dir) uid(g);
+        return old_dir;
+    }
+
     for (auto obj : objects)
     {
         auto type = obj->get_type();

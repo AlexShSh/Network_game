@@ -23,6 +23,8 @@ private:
     conf::Dir moving_dir;
     bool can_move;
     bool death;
+    int generation_count;
+    conf::Dir old_dir;
 
     void interract(std::list<GameObject *>& objects, sf::Time time) override;
 };
