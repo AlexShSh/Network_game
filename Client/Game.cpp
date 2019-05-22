@@ -72,8 +72,11 @@ void Game::update_player(sf::Packet& packet)
 
         players.emplace(id, GraphObject(tx, conf::Player::sprite_width, conf::Player::sprite_height,
                                     250, 250, conf::Dir::LEFT));
-        hp.emplace(id, sf::Text("", cyrilic, 20));
-        hp[id].setFillColor(sf::Color::Red);
+        if(id == owner)
+        {
+            hp.emplace(id, sf::Text("", cyrilic, 20));
+            hp[id].setFillColor(sf::Color::Red);
+        }
 
     }
 
@@ -81,12 +84,14 @@ void Game::update_player(sf::Packet& packet)
     players[id].set_position(x, y, dir);
 
     if(id == owner)
+    {
         set_camera(x, y);
-
-    player_hp << health;
-    hp[id].setString(conf::Player::hp + player_hp.str());
-    hp[id].setPosition(x + conf::Player::text_indent_x, y + conf::Player::text_indent_y);
-    player_hp.str(std::string());
+        player_hp << health;
+        hp[id].setString(conf::Player::hp + player_hp.str());
+        hp[id].setPosition(camera.getCenter().x + conf::Player::text_indent_x,
+                camera.getCenter().y + conf::Player::text_indent_y);
+        player_hp.str(std::string());
+    }
 }
 
 void Game::update_ememy(sf::Packet &packet, int counter)
@@ -99,6 +104,7 @@ void Game::update_ememy(sf::Packet &packet, int counter)
     packet >> number >> x >> y >> dir_tmp >> current_frame;
 
     auto dir = (conf::Dir) dir_tmp;
+    wave_number = number;
 
     enemies[counter].frame_pos(dir, current_frame);
     enemies[counter].set_position(x, y, dir);
@@ -135,6 +141,10 @@ void Game::start()
     Map = GraphObject(&map, conf::Map::sprite_width, conf::Map::sprite_height, 0, 0, conf::DOWN);
 
     cyrilic.loadFromFile(conf::Player::font_filename);
+
+    wave.setFont(cyrilic);
+    wave.setFillColor(sf::Color::Red);
+    wave.setCharacterSize(20);
 
     is_active = true;
 
@@ -181,6 +191,13 @@ void Game::render()
 
     for(auto& text : hp)
         window->draw(text.second);
+
+    player_hp << wave_number;
+    wave.setString(conf::Enemy::wave + player_hp.str());
+    wave.setPosition(camera.getCenter().x + conf::Player::text_indent_x + 100,
+                     camera.getCenter().y + conf::Player::text_indent_y);
+    window->draw(wave);
+    player_hp.str(std::string());
 
     for(auto& en : enemies)
     {
@@ -230,38 +247,31 @@ void Game::map_render(sf::RenderWindow* window) {
     for (int y = 0; y < conf::Map::frame_height; y++)
         for (int x = 0; x < conf::Map::frame_width; x++)
         {
-            if(conf::Map::TileMap[y][x] == ' ')
-                Map.frame_pos(conf::DOWN, 0);
-            if(conf::Map::TileMap[y][x] == '0')
-                Map.frame_pos(conf::DOWN, 1);
-            if(conf::Map::TileMap[y][x] == 'd')
+            switch (conf::Map::TileMap[y][x])
             {
-                Map.frame_pos(conf::DOWN, 0);
-                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
-                Map.draw(window);
-                Map.frame_pos(conf::DOWN, 2);
+                case ' ':
+                    Map.title(578, 866);
+                    break;
+                case '0':
+                    Map.title(506,218);
+                    break;
+                case 'p':
+                    Map.title(578, 867);
+                    Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                    Map.draw(window);
+                    Map.title(74, 1);
+                    break;
+                case 'f':
+                    Map.title(578, 866);
+                    Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                    Map.draw(window);
+                    Map.title(74, 146);
+                    break;
+                default:
+                    continue;
+
             }
-            if(conf::Map::TileMap[y][x] == '1')
-            {
-                Map.frame_pos(conf::DOWN, 0);
-                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
-                Map.draw(window);
-                Map.frame_pos(conf::DOWN, 6);
-            }
-            if(conf::Map::TileMap[y][x] == 'u')
-            {
-                Map.frame_pos(conf::DOWN, 0);
-                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
-                Map.draw(window);
-                Map.frame_pos(conf::DOWN, 4);
-            }
-            if(conf::Map::TileMap[y][x] == 'n')
-            {
-                Map.frame_pos(conf::DOWN, 0);
-                Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
-                Map.draw(window);
-                Map.frame_pos(conf::DOWN, 5);
-            }
+
             Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
             Map.draw(window);
         }

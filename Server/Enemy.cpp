@@ -42,7 +42,7 @@ void Enemy::interract(std::list<GameObject *>& objects, sf::Time time)
                 can_move = false;
                 position += {compute_unit_vector(position, obj->get_position()).x * conf::Enemy::collide_speed * time.asMilliseconds(),
                              compute_unit_vector(position, obj->get_position()).y * conf::Enemy::collide_speed * time.asMilliseconds()};
-                obj->get_damage(0);
+                obj->get_damage(1);
                 break;
             }
             case conf::ObjectType::BULLET:

@@ -143,17 +143,27 @@ void World::generator(sf::Time time)
         counter = 0;
     }
 
-    if(counter != wave * 3 && (time.asSeconds() - 20 * (wave - 1)) > (int)(4 / wave + 1)  * counter && enemies < 30)
+    if(counter != wave * 4 && (time.asSeconds() - 20 * (wave - 1)) > (int)(3 / wave + 1)  * counter && enemies < 30)
     {
-        auto en = new Enemy(512, 512, conf::Dir::RIGHT, counter++);
+        auto en = new Enemy(714, 527, conf::Dir::RIGHT, wave);
         enemies++;
+        counter++;
         objects.emplace_back(en);
+
+        if(wave > 3)
+        {
+            auto en1 = new Enemy(1118, 1272, conf::Dir::RIGHT, wave);
+            enemies++;
+            counter++;
+            objects.emplace_back(en1);
+        }
 
         if(wave > 5)
         {
-            auto en1 = new Enemy(1000, 500, conf::Dir::RIGHT, counter++);
+            auto en2 = new Enemy(1990, 791, conf::Dir::RIGHT, wave);
             enemies++;
-            objects.emplace_back(en1);
+            counter++;
+            objects.emplace_back(en2);
         }
     }
 }

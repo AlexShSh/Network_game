@@ -32,8 +32,6 @@ private:
     std::list<GameObject*> objects;
     std::list<Bullet*> disactive_bullets;
     int enemies;
-
-
     int counter;
     
     Bullet* get_bullet(sf::Vector2f pos, conf::Dir dir_, Player* creator);

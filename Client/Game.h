@@ -45,6 +45,8 @@ private:
     bool window_focused;
     std::ostringstream player_hp;
     std::map<ClientId, sf::Text> hp;
+    sf::Text wave;
+    int wave_number;
     sf::Font cyrilic;
 
     sf::Texture robot1;

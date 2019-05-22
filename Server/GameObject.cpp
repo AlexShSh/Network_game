@@ -169,11 +169,6 @@ sf::Vector2f GameObject::compute_unit_vector(const sf::Vector2f &first, const sf
     // normalize
     radius_vector.x = radius_vector.x / vector_norm;
     radius_vector.y = radius_vector.y / vector_norm;
-    /*
-    sf:: Vector2f add = {-radius_vector.x/radius_vector.y, 1};
-    float norm = fast_square_root(add.x * add.x + add.y * add.y);
-    radius_vector = radius_vector -  add / norm;
-*/
     return {radius_vector.x, radius_vector.y};
 }
 
