@@ -91,8 +91,6 @@ void Player::update(sf::Time time, std::list<GameObject*>& objects)
 
 void Player::compress_packet(sf::Packet &packet)
 {
-    //std::cout << id << " " << (sf::Int16) dir << std::endl;
-
     packet << (sf::Int16) type << id << position.x << position.y <<
           (sf::Int16) dir << get_current_frame() << health;
 }

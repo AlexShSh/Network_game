@@ -67,7 +67,7 @@ bool Client::send(sf::Packet &packet)
 bool Client::recieve(sf::Packet &packet)
 {
     sf::Packet rcv_pack;
-    socket.setBlocking(true);
+    socket.setBlocking(false);
 
     sf::Clock timer;
     sf::Socket::Status status = {};
@@ -77,18 +77,21 @@ bool Client::recieve(sf::Packet &packet)
         if (status == sf::Socket::Status::Done)
             break;
     }
-
-    if (status == sf::Socket::Disconnected)
+    switch (status)
     {
-        return reconect();
+        case sf::Socket::Done:
+            packet.clear();
+            packet = rcv_pack;
+            break;
+        case sf::Socket::Disconnected:
+            return reconect();
+        case sf::Socket::Error:
+            std::cout << "Error reciving packet " << status << std::endl;
+            return false;
+        default:
+            break;
     }
-    else if (status != sf::Socket::Done)
-        std::cout << "Can't recive packet" << std::endl;
 
-    {
-        packet.clear();
-        packet = rcv_pack;
-    }
     return true;
 }
 
@@ -115,6 +118,7 @@ bool Client::recive_id()
     }
 
     auto type = (net::PacketType) type_tmp;
+
     if (type == net::PacketType::SendID)
     {
         packet >> id;
@@ -200,7 +204,6 @@ void Client::disconnect()
     send(packet);
 
     socket.disconnect();
-
 }
 
 ClientId Client::get_id()

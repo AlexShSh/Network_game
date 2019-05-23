@@ -2,6 +2,11 @@
 
 #include <iostream>
 
+World::World() :
+    wave(0),
+    enemies(0),
+    counter(0)
+{}
 
 void World::create_players(std::list<ClientId> clients)
 {
@@ -39,14 +44,17 @@ bool World::upd_players_from_packs(std::map<ClientId, ClientHandler*>* clients)
 
 void World::update_objects(sf::Time time)
 {
-    for (auto it = objects.begin(); it != objects.end();) {
+    for (auto it = objects.begin(); it != objects.end();)
+    {
         GameObject *obj = *it;
 
         obj->update(time, objects);
 
-        if (obj->get_type() == conf::ObjectType::PLAYER) {
+        if (obj->get_type() == conf::ObjectType::PLAYER)
+        {
             auto player = dynamic_cast<Player *> (obj);
-            if (player->is_shoot()) {
+            if (player->is_shoot())
+            {
                 make_shoot(player);
             }
         }
@@ -56,7 +64,8 @@ void World::update_objects(sf::Time time)
             enemies--;
             continue;
         }
-        if (!obj->get_active() && obj->get_type() == conf::ObjectType::BULLET) {
+        if (!obj->get_active() && obj->get_type() == conf::ObjectType::BULLET)
+        {
             auto bul = dynamic_cast<Bullet *> (obj);
             it = objects.erase(it);
             disactive_bullets.emplace_back(bul);
@@ -65,9 +74,11 @@ void World::update_objects(sf::Time time)
     }
 }
 
-sf::Packet World::create_game_state() {
+sf::Packet World::create_game_state()
+{
     sf::Packet packet;
-    for (auto &obj : objects) {
+    for (auto &obj : objects)
+    {
         obj->compress_packet(packet);
     }
 
@@ -99,7 +110,8 @@ void World::make_shoot(Player *player) {
     player->set_shoot_ready(false);
 }
 
-Bullet *World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player *creator) {
+Bullet *World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player *creator)
+{
     if (!disactive_bullets.empty()) {
         Bullet *bul = disactive_bullets.back();
         disactive_bullets.pop_back();
@@ -113,26 +125,20 @@ Bullet *World::get_bullet(sf::Vector2f pos, conf::Dir dir_, Player *creator) {
         return new Bullet(pos.x, pos.y, dir_, creator);
 }
 
-World::~World() {
-    for (auto obj : objects) {
+World::~World()
+{
+    for (auto obj : objects)
+    {
         delete obj;
     }
     objects.clear();
 
-    for (auto bul : disactive_bullets) {
+    for (auto bul : disactive_bullets)
+    {
         delete bul;
     }
     disactive_bullets.clear();
 
-}
-
-int World::disact_players_num() {
-    int count = 0;
-    for (auto pl : players) {
-        if (!pl.second->get_active())
-            count++;
-    }
-    return count;
 }
 
 void World::generator(sf::Time time)
@@ -166,9 +172,4 @@ void World::generator(sf::Time time)
             objects.emplace_back(en2);
         }
     }
-}
-
-World::World()
-{
-    enemies = 0;
 }

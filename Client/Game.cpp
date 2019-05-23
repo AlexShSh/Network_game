@@ -2,7 +2,8 @@
 
 Game::Game() :
     is_active(false),
-    window_focused(false)
+    window_focused(false),
+    window(nullptr)
 {}
 
 void Game::update_objects(sf::Packet& packet)
@@ -55,8 +56,6 @@ void Game::update_player(sf::Packet& packet)
 
     packet >> id >> x >> y >> dir_tmp >> current_frame >> health;
 
-
-
     auto dir = (conf::Dir) dir_tmp;
 
     if (dir == conf::Dir::NONE)
@@ -83,7 +82,7 @@ void Game::update_player(sf::Packet& packet)
     players[id].frame_pos(dir, current_frame);
     players[id].set_position(x, y, dir);
 
-    if(id == owner)
+    if (id == owner)
     {
         set_camera(x, y);
         player_hp << health;
@@ -209,9 +208,11 @@ void Game::render()
 
 Game::~Game()
 {
-    window->close();
-
-    delete window;
+    if (window)
+    {
+        window->close();
+        delete window;
+    }
 }
 
 void Game::set_active(bool b)
@@ -257,13 +258,15 @@ void Game::map_render(sf::RenderWindow* window) {
                     break;
                 case 'p':
                     Map.title(578, 867);
-                    Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                    Map.set_position((x + 0.5f) * conf::Map::sprite_width,
+                                     (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
                     Map.draw(window);
                     Map.title(74, 1);
                     break;
                 case 'f':
                     Map.title(578, 866);
-                    Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+                    Map.set_position((x + 0.5f) * conf::Map::sprite_width,
+                                     (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
                     Map.draw(window);
                     Map.title(74, 146);
                     break;
@@ -272,7 +275,8 @@ void Game::map_render(sf::RenderWindow* window) {
 
             }
 
-            Map.set_position((x + 0.5f) * conf::Map::sprite_width, (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
+            Map.set_position((x + 0.5f) * conf::Map::sprite_width,
+                             (y + 0.5f) * conf::Map::sprite_height, conf::NONE);
             Map.draw(window);
         }
 }
@@ -303,6 +307,7 @@ void Game::set_camera(float x, float y)
         cam_x = map_x - win_x / 2;
     if(cam_y > map_y - win_y / 2)
         cam_y = map_y - win_y / 2;
+
     camera.setCenter(cam_x, cam_y);
 
 }

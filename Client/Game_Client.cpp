@@ -38,6 +38,8 @@ bool Game_Client::play()
         client.send(pack);
     }
     game.set_active(false);
+    client.disconnect();
+
     return true;
 }
 

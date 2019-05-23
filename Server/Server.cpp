@@ -29,8 +29,6 @@ void Server::connect_clients()
 
 bool Server::add_client()
 {
-    std::cout << "new client want to connect\n";
-
     auto new_socket = new sf::TcpSocket;
     new_socket->setBlocking(false);
 
@@ -204,21 +202,18 @@ bool Server::send_serv_full(sf::TcpSocket *socket)
 
 bool Server::broadcast(sf::Packet &packet)
 {
-    sf::Packet send_pack = packet;
-    //send_pack << (sf::Int16) net::PacketType::Data << packet;
-
     sf::Lock lock(mutex);
     for (auto& cl : clients)
     {
         auto sock = cl.second->get_socket();
-        auto status = sock->send(send_pack);
+        auto status = sock->send(packet);
 
         while (status == sf::Socket::Partial)
-            status = sock->send(send_pack);
+            status = sock->send(packet);
 
         if (status == sf::Socket::Done)
             continue;
-        else
+        else if (status != sf::Socket::Disconnected)
         {
             std::cout << "Couldn't send packet" << std::endl;
             return false;
