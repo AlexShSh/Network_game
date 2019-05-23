@@ -152,7 +152,7 @@ conf::Dir Enemy::get_direction(std::list<GameObject *> &objects)
     {
         auto type = obj->get_type();
 
-        if(type != conf::ObjectType::PLAYER)
+        if(type != conf::ObjectType::PLAYER || !obj->get_active())
             continue;
 
         player_dist = distance(obj->get_position());
