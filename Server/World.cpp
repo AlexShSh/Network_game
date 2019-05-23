@@ -143,7 +143,7 @@ void World::generator(sf::Time time)
         counter = 0;
     }
 
-    if(counter != wave * 4 && (time.asSeconds() - 20 * (wave - 1)) > (int)(3 / wave + 1)  * counter && enemies < 30)
+    if(counter != wave * 7 && (time.asSeconds() - 20 * (wave - 1)) > (int)(3 / wave + 0.5)  * counter && enemies < 60)
     {
         auto en = new Enemy(714, 527, conf::Dir::RIGHT, wave);
         enemies++;
